@@ -1,6 +1,8 @@
 import axios, { AxiosInstance } from 'axios'
-import type { MyRequestInterceptors } from '@/utils/network/types'
-import { MyRequestConfig } from '@/utils/network/types'
+import type {
+  MyRequestConfig,
+  MyRequestInterceptors
+} from '@/utils/network/types'
 
 class MyRequest {
   instance: AxiosInstance

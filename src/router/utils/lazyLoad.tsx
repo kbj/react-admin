@@ -1,4 +1,5 @@
-import { lazy, ReactNode, Suspense } from 'react'
+import type { ReactNode } from 'react'
+import { lazy, Suspense } from 'react'
 import GlobalLoading from '@/components/global-loading'
 
 /**

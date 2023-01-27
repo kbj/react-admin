@@ -2,7 +2,7 @@ import type { FC, ReactNode } from 'react'
 import React, { memo, useEffect, useState } from 'react'
 import { Card, Col, Row, Statistic } from 'antd'
 import { goodsAmountList } from '@/api/analysis'
-import { GoodsAmountList } from '@/global/types/analysis'
+import type { GoodsAmountList } from '@/global/types/analysis'
 import CountUp from 'react-countup'
 
 interface IProps {

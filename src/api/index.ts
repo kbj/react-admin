@@ -1,6 +1,6 @@
 import MyRequest from '@/utils/network'
 import { API_SUCCESS_CODE } from '@/global/constant'
-import type { AxiosHeaders } from 'axios'
+import type { AxiosHeaders, InternalAxiosRequestConfig } from 'axios'
 import { message } from 'antd'
 import { useUserStore } from '@/store/common'
 
@@ -12,12 +12,10 @@ export default new MyRequest({
   interceptors: {
     requestInterceptor: (config) => {
       // 判断是否有token，携带token
+      const newConfigType = config as InternalAxiosRequestConfig
       const token = useUserStore.getState().token
-      if (token) {
-        const headers = config.headers as AxiosHeaders
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return config
+      token && newConfigType.headers.set('Authorization', `Bearer ${token}`)
+      return newConfigType
     },
     responseInterceptor: (resp) => {
       // （成功请求状态下执行的拦截器）

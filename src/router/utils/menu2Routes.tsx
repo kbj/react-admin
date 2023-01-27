@@ -5,7 +5,7 @@ import type {
 } from '@/global/types/common'
 import { lazyLoad } from '@/router/utils/lazyLoad'
 import { BuildOutlined } from '@ant-design/icons'
-import React from 'react'
+import type { Key, ReactNode } from 'react'
 
 /**
  * 将接口菜单转换为路由对象
@@ -60,9 +60,9 @@ const convertMenuList2Route = (
 }
 
 function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
+  label: ReactNode,
+  key: Key,
+  icon?: ReactNode,
   children?: AntdMenuItem[],
   type?: 'group'
 ): AntdMenuItem {

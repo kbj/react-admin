@@ -1,4 +1,4 @@
-import * as React from 'react'
+import type { ReactNode } from 'react'
 
 /**
  * 路由额外自定义信息
@@ -26,8 +26,8 @@ export interface RouteMeta {
 export interface AuthRouteObject {
   index?: false
   path?: string
-  element?: React.ReactNode | null
-  errorElement?: React.ReactNode | null
+  element?: ReactNode | null
+  errorElement?: ReactNode | null
   children?: AuthRouteObject[]
   meta?: RouteMeta
 }

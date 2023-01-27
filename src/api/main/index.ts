@@ -1,5 +1,5 @@
 import api from '@/api'
-import { ICommonResponse, IMenuTreeList } from '@/global/types/common'
+import type { ICommonResponse, IMenuTreeList } from '@/global/types/common'
 
 /**
  * 请求菜单树
