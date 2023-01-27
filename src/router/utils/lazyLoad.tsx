@@ -1,5 +1,5 @@
-import { lazy, ReactNode, Suspense } from "react";
-import GlobalLoading from "@/components/global-loading";
+import { lazy, ReactNode, Suspense } from 'react'
+import GlobalLoading from '@/components/global-loading'
 
 /**
  * @description 路由懒加载

@@ -1,6 +1,6 @@
-import api from "@/api";
-import type { ICommonResponse } from "@/global/types/common";
-import type { GoodsAmountList } from "@/global/types/analysis";
+import api from '@/api'
+import type { ICommonResponse } from '@/global/types/common'
+import type { GoodsAmountList } from '@/global/types/analysis'
 
 /**
  * 商品统计信息

@@ -1,10 +1,10 @@
-import React, { FC, useEffect } from "react";
-import { convertMenuList } from "@/router/utils";
-import { useLocation, useNavigate, useRoutes } from "react-router-dom";
-import "nprogress/nprogress.css";
-import nProgress from "nprogress";
-import { loginGuard } from "@/router/guard";
-import { useUserStore } from "@/store/common";
+import React, { FC, useEffect } from 'react'
+import { convertMenuList } from '@/router/utils'
+import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
+import 'nprogress/nprogress.css'
+import nProgress from 'nprogress'
+import { loginGuard } from '@/router/guard'
+import { useUserStore } from '@/store/common'
 
 /**
  * 路由封装

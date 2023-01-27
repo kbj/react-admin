@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import type { NavTab } from "@/global/types/common/nav-tab";
-import { devtools } from "zustand/middleware";
-import produce from "immer";
+import { create } from 'zustand'
+import type { NavTab } from '@/global/types/common/nav-tab'
+import { devtools } from 'zustand/middleware'
+import produce from 'immer'
 
 /**
  * 标签页相关的store

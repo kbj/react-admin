@@ -51,7 +51,9 @@ const MainMenu: FC<IProps> = (props) => {
 
   // 查询当前激活的菜单
   const getActiveMenuList = (): string[] => {
-    const activeMenus = antdMenuList.filter(item => item && item.key && pathname.indexOf(item.key as string) > -1)
+    const activeMenus = antdMenuList.filter(
+      (item) => item && item.key && pathname.indexOf(item.key as string) > -1
+    )
     return []
   }
 

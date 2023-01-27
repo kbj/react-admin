@@ -37,4 +37,4 @@ const Dashboard: FC<IProps> = () => {
   )
 }
 
-export default memo(Dashboard);
+export default memo(Dashboard)

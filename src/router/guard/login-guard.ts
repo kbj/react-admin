@@ -1,7 +1,7 @@
-import { searchRouteDetail } from "@/router/utils";
-import type { Location, NavigateFunction } from "react-router-dom";
-import { useUserStore } from "@/store/common";
-import { message } from "antd";
+import { searchRouteDetail } from '@/router/utils'
+import type { Location, NavigateFunction } from 'react-router-dom'
+import { useUserStore } from '@/store/common'
+import { message } from 'antd'
 
 /**
  * 登录守卫

@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react'
 
 /**
  * 路由额外自定义信息

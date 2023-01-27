@@ -79,8 +79,7 @@ const MainNavTab: FC<IProps> = () => {
    * 右键功能
    * @param event 事件
    */
-  const rightClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-  }
+  const rightClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {}
 
   return (
     <>

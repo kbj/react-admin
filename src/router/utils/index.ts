@@ -1,5 +1,5 @@
 //递归查询对应的路由
-import { AuthRouteObject } from "@/global/types/common";
+import { AuthRouteObject } from '@/global/types/common'
 
 /**
  * 递归查询对应路由对象信息

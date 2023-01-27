@@ -85,4 +85,4 @@ function Component({ active, children, name, renderDiv }: ComponentProps) {
   )
 }
 
-export const KeepAliveComponent = memo(Component);
+export const KeepAliveComponent = memo(Component)

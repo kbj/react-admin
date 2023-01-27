@@ -1,7 +1,11 @@
-import type { AntdMenuItem, AuthRouteObject, IMenuTreeList } from "@/global/types/common";
-import { lazyLoad } from "@/router/utils/lazyLoad";
-import { BuildOutlined } from "@ant-design/icons";
-import React from "react";
+import type {
+  AntdMenuItem,
+  AuthRouteObject,
+  IMenuTreeList
+} from '@/global/types/common'
+import { lazyLoad } from '@/router/utils/lazyLoad'
+import { BuildOutlined } from '@ant-design/icons'
+import React from 'react'
 
 /**
  * 将接口菜单转换为路由对象

@@ -110,4 +110,4 @@ const Login: FC<IProps> = () => {
   )
 }
 
-export default memo(Login);
+export default memo(Login)
