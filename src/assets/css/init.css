@@ -1,0 +1,14 @@
+/*一些全局需要的初始化CSS*/
+
+html {
+    /*让 1rem = 16px*62.5%=10px，14px=1.4rem*/
+    font-size: 62.5%;
+
+    /*按照antd规范设置默认字体颜色和字体*/
+    color: rgba(0, 0, 0, 0.85);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+
+    min-width: 50rem;
+}
