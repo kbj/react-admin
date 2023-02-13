@@ -5,8 +5,8 @@ interface IProps {
   children?: ReactNode
 }
 
-const System: FC<IProps> = () => {
-  return <div>系统管理</div>
+const NotFound: FC<IProps> = () => {
+  return <>404 Not Found</>
 }
 
-export default memo(System)
+export default memo(NotFound)

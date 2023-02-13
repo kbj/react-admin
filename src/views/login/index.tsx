@@ -1,14 +1,15 @@
 import type { FC, ReactNode } from 'react'
-import React, { memo, useEffect } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Button, Card, Checkbox, Form, Input, message } from 'antd'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import Logo from '@/components/logo'
 import { LoginWrapper } from '@/views/login/style'
 import { CSS_COMMON_GAP } from '@/global/constant'
 import { useRequest } from 'ahooks'
-import { login } from '@/api/login'
+import { getMenus, getUserInfo, login } from '@/api/login'
 import { useNavigate } from 'react-router-dom'
 import { useUserStore } from '@/store/common'
+import { useRouteStore } from '@/store/common/route'
 
 interface IProps {
   children?: ReactNode
@@ -17,22 +18,36 @@ interface IProps {
 const Login: FC<IProps> = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const setToken = useUserStore((state) => state.setToken)
-  const setUserId = useUserStore((state) => state.setUserId)
-  // 表单提交
-  const { loading, run } = useRequest(login, {
+  const [loading, setLoading] = useState<boolean>(false)
+  const updateUserInfo = useUserStore((state) => state.updateUserInfo)
+  const updateMenuList = useRouteStore((state) => state.updateMenuList)
+  // 登录
+  const { run } = useRequest(login, {
     manual: true,
     loadingDelay: 300,
-    onSuccess: (data) => {
+    onBefore: () => {
+      setLoading(true)
+    },
+    onSuccess: () => {
+      requestUserInfo.run()
+      requestMenuInfo.run()
+    }
+  })
+  // 查询用户信息
+  const requestUserInfo = useRequest(getUserInfo, {
+    manual: true,
+    onSuccess: (result) => updateUserInfo(result.data)
+  })
+  // 查询菜单路由注册信息
+  const requestMenuInfo = useRequest(getMenus, {
+    manual: true,
+    onSuccess: (result) => {
+      updateMenuList(result.data)
       message.success('登录成功')
-
-      // 缓存用户信息以及token
-      setToken(data.data.token)
-      setUserId(data.data.id)
-
       // 跳转到主页面
       navigate('/')
-    }
+    },
+    onFinally: () => setLoading(false)
   })
 
   useEffect(() => {
@@ -63,7 +78,7 @@ const Login: FC<IProps> = () => {
         >
           {/*用户名*/}
           <Form.Item
-            name="name"
+            name="username"
             rules={[
               { required: true, message: '请输入用户名' },
               { min: 5, max: 32, message: '用户名的长度为5-32' }

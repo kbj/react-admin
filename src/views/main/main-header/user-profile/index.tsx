@@ -35,6 +35,7 @@ const UserProfile: FC<IProps> = () => {
         <Space>
           <Avatar
             src={
+              userInfo?.user.avatar ||
               'https://upload.jianshu.io/users/upload_avatars/1102036/c3628b478f06.jpeg'
             }
           />
@@ -43,7 +44,7 @@ const UserProfile: FC<IProps> = () => {
               fontSize: '1.6rem'
             }}
           >
-            {userInfo?.name}
+            {userInfo?.user.username}
           </span>
         </Space>
       </Dropdown>

@@ -10,12 +10,16 @@ export const searchRouteDetail = (
   path: string,
   routes: AuthRouteObject[]
 ): AuthRouteObject | null => {
-  for (let item of routes) {
+  if (!routes || routes.length === 0) {
+    return null
+  }
+
+  for (const item of routes) {
     if (item.path === path) {
       return item
     }
     if (item.children) {
-      return searchRouteDetail(path, item.children)
+      searchRouteDetail(path, item.children)
     }
   }
   return null

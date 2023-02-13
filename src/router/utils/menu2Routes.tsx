@@ -1,62 +1,88 @@
 import type {
   AntdMenuItem,
   AuthRouteObject,
-  IMenuTreeList
+  IMenu
 } from '@/global/types/common'
 import { lazyLoad } from '@/router/utils/lazyLoad'
-import { BuildOutlined } from '@ant-design/icons'
 import type { Key, ReactNode } from 'react'
+import { MenuType } from '@/global/enums'
+import { iconToElement } from '@/utils/icon'
 
 /**
- * 将接口菜单转换为路由对象
- * @param menus 接口菜单列表
+ * 接口返回的菜单列表生成ReactRouter所需的路由对象
+ * @param menuLists 接口返回菜单列表
  */
-export const convertMenuList = (
-  menus: IMenuTreeList[]
-): [AuthRouteObject[] | undefined, AntdMenuItem[] | undefined] => {
-  const dynamicRoutes: AuthRouteObject[] = []
-
-  return [dynamicRoutes, convertMenuList2Route(dynamicRoutes, menus)]
+export const menu2Routes = (
+  menuLists: IMenu[]
+): AuthRouteObject[] | undefined => {
+  return (
+    menuLists
+      // 路由只需要提取是菜单类型
+      .filter((menu) => menu.menuType === MenuType.MENU && menu.component)
+      .map((menu) => {
+        const [fullPath, treePath] = getFullPath(menuLists, menu.parentId)
+        return {
+          path: fullPath + menu.path,
+          element: lazyLoad(menu.component as string),
+          meta: { title: menu.menuName, key: menu.id + '', treePath }
+        }
+      })
+  )
 }
 
 /**
- * 递归构建Antd菜单对象与注册路由的对象
- * @param dynamicRoutes
- * @param menus
+ * 递归查询路由完整路径
+ * @param menuLists 菜单列表
+ * @param parentId  父菜单
+ * @param fullPath  生成的全路径
+ * @param treePath [string, string[]] [完整路由路径，层级菜单ID]
  */
-const convertMenuList2Route = (
-  dynamicRoutes: AuthRouteObject[],
-  menus: IMenuTreeList[]
-): AntdMenuItem[] | undefined => {
-  // 遍历到叶子为空或菜单类型为3时退出递归
-  if (!menus || menus.length === 0 || menus[0].type === 3) {
-    return undefined
+function getFullPath(
+  menuLists: IMenu[],
+  parentId: number,
+  fullPath: string = '/',
+  treePath: string[] = []
+): [string, string[]] {
+  if (parentId === 0 || !parentId) {
+    return [fullPath, treePath]
   }
 
-  const antdMenus: AntdMenuItem[] = []
-  for (const menu of menus) {
-    const url = (menu.url || '').replace('/main', '')
-
-    // 构建antd菜单对象
-    const menuItem = getItem(menu.name, url, <BuildOutlined />)
-
-    if (menu.children && menu.children.length > 0) {
-      ;(menuItem as any).children = convertMenuList2Route(
-        dynamicRoutes,
-        menu.children
-      )
-    } else {
-      // 如果当前子路由是空的，说明是叶子节点，这时候需要添加link路由以及注册路由
-      // ;(menuItem as any).label = <Link to={url}>{menu.name}</Link>
-      dynamicRoutes.push({
-        path: url,
-        meta: { auth: true, title: menu.name, key: url },
-        element: lazyLoad(url)
-      })
+  for (const menu of menuLists) {
+    if (menu.id === parentId) {
+      fullPath = '/' + menu.path + fullPath
+      treePath.push(menu.id + '')
+      return getFullPath(menuLists, menu.parentId, fullPath, treePath)
     }
-    antdMenus.push(menuItem)
   }
-  return antdMenus
+  return [fullPath, treePath]
+}
+
+/**
+ * 将接口返回菜单列表生成Antd导航菜单所需的菜单树结构
+ * @param menuList  菜单列表
+ * @param parentId 初始父ID
+ */
+export function menu2AntdMenu(
+  menuList: IMenu[],
+  parentId: number = 0
+): AntdMenuItem[] | undefined {
+  const item = menuList
+    .filter(
+      (menu) =>
+        menu.parentId === parentId &&
+        menu.menuType !== MenuType.BUTTON &&
+        menu.path &&
+        menu.visible
+    )
+    .map((menu) => {
+      return getItem(
+        menu.menuName,
+        menu.id + '',
+        menu.icon ? iconToElement(menu.icon) : undefined,
+        menu2AntdMenu(menuList, menu.id)
+      )
+    })
+  return item && item.length > 0 ? item : undefined
 }
 
 function getItem(

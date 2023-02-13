@@ -5,9 +5,9 @@ import type { ReactNode } from 'react'
  */
 export interface RouteMeta {
   /**
-   * 是否需要登录
+   * 是否匿名访问
    */
-  auth?: boolean
+  anonymous?: boolean
 
   /**
    * 路由标题
@@ -18,6 +18,11 @@ export interface RouteMeta {
    * 路由key
    */
   key?: string
+
+  /**
+   * 路由树中各层ID
+   */
+  treePath?: string[]
 }
 
 /**

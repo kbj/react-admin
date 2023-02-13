@@ -1,13 +1,13 @@
-import type { ILogin, ILoginResponse } from "@/global/types/login";
+import type { ILogin } from "@/global/types/login";
 import network from "@/api";
-import type { ICommonResponse, IUserInfo } from "@/global/types/common";
+import type { ICommonResponse, IMenu, IUserInfo } from "@/global/types/common";
 
 /**
  * 登录方法
  * @param data 数据
  */
 export function login(data: ILogin) {
-  return network.post<ICommonResponse<ILoginResponse>>({
+  return network.post<ICommonResponse<null>>({
     url: '/login',
     data
   })
@@ -15,10 +15,18 @@ export function login(data: ILogin) {
 
 /**
  * 用户信息
- * @param userId 用户ID
  */
-export function getUserInfo(userId: number) {
+export function getUserInfo() {
   return network.get<ICommonResponse<IUserInfo>>({
-    url: '/users/' + userId
+    url: '/user-info'
+  })
+}
+
+/**
+ * 查询用户菜单
+ */
+export function getMenus() {
+  return network.get<ICommonResponse<IMenu[]>>({
+    url: '/menus'
   })
 }

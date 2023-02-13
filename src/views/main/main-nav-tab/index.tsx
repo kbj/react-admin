@@ -3,10 +3,11 @@ import React, { memo, useEffect, useState } from 'react'
 import { Tabs, theme } from 'antd'
 import { DivWrapper } from '@/views/main/main-nav-tab/style'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useNavTabStore, useUserStore } from '@/store/common'
+import { useNavTabStore } from '@/store/common'
 import { searchRouteDetail } from '@/router/utils'
 import type { NavTab } from '@/global/types/common/nav-tab'
 import { KeepAliveContainer } from '@/global/keep-alive'
+import { useRouteStore } from '@/store/common/route'
 
 interface IProps {
   children?: ReactNode
@@ -18,7 +19,7 @@ const MainNavTab: FC<IProps> = () => {
   } = theme.useToken()
   const { pathname } = useLocation()
   const [activeKey, setActiveKey] = useState<string>(pathname) // 当前激活的路径
-  const dynamicRoutes = useUserStore((state) => state.dynamicRoutes) // 动态路由信息
+  const routeList = useRouteStore((state) => state.routeList) // 动态路由信息
   const navTabs = useNavTabStore((state) => state.navTabs) // 标签页
   const addNavTabAction = useNavTabStore((state) => state.addNavTabAction) // 添加标签页
   const updateNavTabAction = useNavTabStore((state) => state.updateNavTabAction) // 更新标签页
@@ -34,7 +35,10 @@ const MainNavTab: FC<IProps> = () => {
       return
     }
     // 根据当前路径查询路由对象
-    const currentRoute = searchRouteDetail(pathname, dynamicRoutes)
+    const currentRoute = searchRouteDetail(
+      pathname,
+      routeList[0].children || []
+    )
     if (!currentRoute) {
       return
     }

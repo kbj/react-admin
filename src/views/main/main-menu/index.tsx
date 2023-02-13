@@ -1,11 +1,12 @@
 import type { FC, ReactNode } from 'react'
-import React, { memo } from 'react'
+import React, { memo, useLayoutEffect, useState } from 'react'
 import type { MenuProps } from 'antd'
 import { Layout, Menu, theme } from 'antd'
 import { LogoDivWrapper } from '@/views/main/style'
 import Logo from '@/components/logo'
-import { useUserStore } from '@/store/common'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useRouteStore } from '@/store/common/route'
+import { searchRouteDetail } from '@/router/utils'
 
 interface IProps {
   children?: ReactNode
@@ -16,45 +17,46 @@ const MainMenu: FC<IProps> = (props) => {
   const {
     token: { colorPrimaryBg }
   } = theme.useToken()
-  const antdMenuList = useUserStore((state) => state.antdMenuList)
-  const menuList = useUserStore.getState().menuList
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+  const [openKeys, setOpenKeys] = useState<string[]>([])
+  const antdMenuList = useRouteStore((state) => state.antdMenuList)
+  const routeList = useRouteStore((state) => state.routeList)
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  // 计算默认展开的列表id
-  function getDefaultOpenKeys(path: string): string[] {
-    const defaultSelectedKeys: string[] = []
-    let startMenus = menuList.filter(
-      (menu) => menu.url && ('/main' + path).indexOf(menu.url) > -1
-    )
-    while (startMenus && startMenus.length > 0) {
-      if (startMenus[0].url) {
-        defaultSelectedKeys.push(startMenus[0].url.replace('/main', ''))
-      }
-      startMenus =
-        startMenus[0].children?.filter(
-          (menu) => menu.url && ('/main' + path).indexOf(menu.url) > -1
-        ) || []
+  // 监控当前路径匹配导航菜单展开选中状态
+  useLayoutEffect(() => {
+    resetMenu()
+  }, [pathname, props.collapsed])
+
+  function resetMenu() {
+    const routeDetail = searchRouteDetail(pathname, routeList[0].children || [])
+    if (routeDetail) {
+      // 更新展开的Key
+      setOpenKeys(routeDetail.meta?.treePath || [])
+      // 更新选中Key
+      setSelectedKeys([routeDetail.meta?.key || '/'])
     }
-    return defaultSelectedKeys
   }
 
   // 菜单点击事件
   const menuClick: MenuProps['onClick'] = (menu) => {
-    if (menu.key === pathname) {
+    const businessRoutes = routeList[0].children
+    if (!businessRoutes) {
       return
     }
 
-    // 跳转
-    navigate(menu.key)
-  }
-
-  // 查询当前激活的菜单
-  const getActiveMenuList = (): string[] => {
-    const activeMenus = antdMenuList.filter(
-      (item) => item && item.key && pathname.indexOf(item.key as string) > -1
-    )
-    return []
+    for (let route of businessRoutes) {
+      if (route.meta?.key === menu.key) {
+        const path = route.path || '/'
+        if (path === pathname) {
+          return
+        }
+        // 跳转
+        navigate(path)
+        break
+      }
+    }
   }
 
   return (
@@ -70,8 +72,9 @@ const MainMenu: FC<IProps> = (props) => {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={[pathname]}
-        defaultOpenKeys={getDefaultOpenKeys(pathname)}
+        selectedKeys={selectedKeys}
+        openKeys={openKeys}
+        onOpenChange={(openKeys) => setOpenKeys(openKeys)}
         items={antdMenuList}
         onClick={menuClick}
       />

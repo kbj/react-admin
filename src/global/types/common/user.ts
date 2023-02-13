@@ -1,20 +1,21 @@
-/**
- * 菜单树结构
- */
-export interface IMenuTree {
-  list: IMenuTreeList[]
-}
+import type { MenuType } from '@/global/enums'
 
-export interface IMenuTreeList {
-  children?: IMenuTreeList[]
+/**
+ * 菜单
+ */
+export interface IMenu {
+  id: number // 主键
+  menuName: string // 菜单名称
+  parentId: number // 父菜单ID
+  orderNum: number // 排序
+  menuType: MenuType // 菜单类型
+  visible: boolean // 是否可见
   icon?: string
-  id: number
-  sort: number
-  name: string
-  type: number
   createAt: string
   updateAt: string
-  url?: string
+  permissionFlag?: string // 权限标识
+  path?: string // 路由地址
+  component?: string // 组件地址
 }
 
 /**
@@ -44,13 +45,15 @@ export interface IDepartment {
  * 用户信息
  */
 export interface IUserInfo {
+  user: IUser
+  roles: string[] // 角色
+}
+
+export interface IUser {
   id: number
-  name: string
-  realname: string
-  cellphone: number
-  enable: number
-  createAt: string
-  updateAt: string
-  role: IRole
-  department: IDepartment
+  username: string
+  mobile: string
+  deptId: number
+  gender: string // 性别
+  avatar: string // 头像
 }

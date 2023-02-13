@@ -1,10 +1,9 @@
 import React, { FC, useEffect } from 'react'
-import { convertMenuList } from '@/router/utils'
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import 'nprogress/nprogress.css'
 import nProgress from 'nprogress'
 import { loginGuard } from '@/router/guard'
-import { useUserStore } from '@/store/common'
+import { useRouteStore } from '@/store/common/route'
 
 /**
  * 路由封装
@@ -13,10 +12,7 @@ import { useUserStore } from '@/store/common'
 const MyRouter: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const menuList = useUserStore((state) => state.menuList)
-  const updateAntdMenuList = useUserStore((state) => state.updateAntdMenuList)
-  const dynamicRoutes = useUserStore((state) => state.dynamicRoutes)
-  const updateDynamicRoutes = useUserStore((state) => state.updateDynamicRoutes)
+  const routeList = useRouteStore((state) => state.routeList)
 
   // 守卫相关
   useEffect(() => {
@@ -31,15 +27,7 @@ const MyRouter: FC = () => {
     }
   }, [location, navigate])
 
-  // 路由菜单更新相关
-  useEffect(() => {
-    const [dynamicRoutes, antdMenus] = convertMenuList(menuList)
-    updateDynamicRoutes(dynamicRoutes || [])
-
-    updateAntdMenuList(antdMenus || [])
-  }, [menuList])
-
-  return useRoutes(dynamicRoutes)
+  return useRoutes(routeList)
 }
 
 export default MyRouter
