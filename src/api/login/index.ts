@@ -1,6 +1,6 @@
-import type { ILogin } from "@/global/types/login";
-import network from "@/api";
-import type { ICommonResponse, IMenu, IUserInfo } from "@/global/types/common";
+import type { ILogin } from '@/api/types/login'
+import network from '@/api'
+import type { ICommonResponse, IMenu, IUserInfo } from '@/api/types/common'
 
 /**
  * 登录方法

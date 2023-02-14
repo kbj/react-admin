@@ -1,8 +1,4 @@
-import type {
-  AntdMenuItem,
-  AuthRouteObject,
-  IMenu
-} from '@/global/types/common'
+import type { AntdMenuItem, AuthRouteObject, IMenu } from '@/api/types/common'
 import { lazyLoad } from '@/router/utils/lazyLoad'
 import type { Key, ReactNode } from 'react'
 import { MenuType } from '@/global/enums'

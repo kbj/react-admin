@@ -1,8 +1,4 @@
-import type {
-  AntdMenuItem,
-  AuthRouteObject,
-  IMenu
-} from '@/global/types/common'
+import type { AntdMenuItem, AuthRouteObject, IMenu } from '@/api/types/common'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { lazyLoad, menu2AntdMenu, menu2Routes } from '@/router/utils'

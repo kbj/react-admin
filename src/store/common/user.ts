@@ -1,6 +1,6 @@
 import { create, StateCreator } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import type { IUserInfo } from '@/global/types/common'
+import type { IUserInfo } from '@/api/types/common'
 import produce from 'immer'
 
 const STORE_NAME = 'user-store'

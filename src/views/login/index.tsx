@@ -24,7 +24,6 @@ const Login: FC<IProps> = () => {
   // 登录
   const { run } = useRequest(login, {
     manual: true,
-    loadingDelay: 300,
     onBefore: () => {
       setLoading(true)
     },

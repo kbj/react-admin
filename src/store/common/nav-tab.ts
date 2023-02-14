@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { NavTab } from '@/global/types/common/nav-tab'
+import type { NavTab } from '@/api/types/common'
 import { devtools } from 'zustand/middleware'
 import produce from 'immer'
 

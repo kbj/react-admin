@@ -7,12 +7,14 @@ import Logo from '@/components/logo'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useRouteStore } from '@/store/common/route'
 import { searchRouteDetail } from '@/router/utils'
+import { useUpdateLayoutEffect } from 'ahooks'
+
+let cacheOpenKeys: string[] = []
 
 interface IProps {
   children?: ReactNode
   collapsed?: boolean
 }
-
 const MainMenu: FC<IProps> = (props) => {
   const {
     token: { colorPrimaryBg }
@@ -26,10 +28,6 @@ const MainMenu: FC<IProps> = (props) => {
 
   // 监控当前路径匹配导航菜单展开选中状态
   useLayoutEffect(() => {
-    resetMenu()
-  }, [pathname, props.collapsed])
-
-  function resetMenu() {
     const routeDetail = searchRouteDetail(pathname, routeList[0].children || [])
     if (routeDetail) {
       // 更新展开的Key
@@ -37,7 +35,17 @@ const MainMenu: FC<IProps> = (props) => {
       // 更新选中Key
       setSelectedKeys([routeDetail.meta?.key || '/'])
     }
-  }
+  }, [pathname])
+
+  // 监控菜单栏折叠情况
+  useUpdateLayoutEffect(() => {
+    if (props.collapsed) {
+      cacheOpenKeys = [...openKeys]
+    } else {
+      // 使用延迟展开解决立即展开时候会出现的闪屏问题
+      setTimeout(() => setOpenKeys([...cacheOpenKeys]), 100)
+    }
+  }, [props.collapsed])
 
   // 菜单点击事件
   const menuClick: MenuProps['onClick'] = (menu) => {

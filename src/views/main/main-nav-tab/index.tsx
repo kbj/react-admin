@@ -5,7 +5,7 @@ import { DivWrapper } from '@/views/main/main-nav-tab/style'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useNavTabStore } from '@/store/common'
 import { searchRouteDetail } from '@/router/utils'
-import type { NavTab } from '@/global/types/common/nav-tab'
+import type { NavTab } from '@/api/types/common'
 import { KeepAliveContainer } from '@/global/keep-alive'
 import { useRouteStore } from '@/store/common/route'
 
