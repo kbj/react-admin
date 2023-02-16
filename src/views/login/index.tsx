@@ -30,7 +30,8 @@ const Login: FC<IProps> = () => {
     onSuccess: () => {
       requestUserInfo.run()
       requestMenuInfo.run()
-    }
+    },
+    onError: () => setLoading(false)
   })
   // 查询用户信息
   const requestUserInfo = useRequest(getUserInfo, {
