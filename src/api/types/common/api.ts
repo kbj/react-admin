@@ -5,7 +5,7 @@ export interface ICommonResponse<T = any> {
 }
 
 export interface ICommonPageResponse<T = any> {
-  records: T
+  records: T[]
   total: number
   pageSize: number
   pageNum: number
