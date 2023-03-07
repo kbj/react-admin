@@ -1,18 +1,18 @@
-import type { FC, ReactNode } from 'react'
-import React, { memo } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Button, Col, DatePicker, Form, Input, Row, Space, theme } from 'antd'
 import type { TableSearchFormItem } from '@/components/table-search-form/types'
 import { FormItemType } from '@/components/table-search-form/types'
 import dayjs from 'dayjs'
 
-interface IProps {
+interface IProps<T> {
   children?: ReactNode
   config: TableSearchFormItem[]
   loading?: boolean // 加载状态
-  submit: (data: any) => void
+  submit: (data: T) => void
 }
 
-const TableSearchForm: FC<IProps> = (props) => {
+const TableSearchForm = <T,>(props: IProps<T>) => {
   const { token } = theme.useToken()
   const [form] = Form.useForm()
 
@@ -27,9 +27,7 @@ const TableSearchForm: FC<IProps> = (props) => {
   const onFinish = (values: any) => {
     // 判断是否有时间格式并将dayjs格式转为时间戳
     const timeConfigs = props.config.filter(
-      (item) =>
-        item.itemType === FormItemType.Date ||
-        item.itemType === FormItemType.DateTime
+      (item) => item.itemType === FormItemType.Date || item.itemType === FormItemType.DateTime
     )
     if (timeConfigs && timeConfigs.length > 0) {
       for (const timeConfig of timeConfigs) {
@@ -47,15 +45,7 @@ const TableSearchForm: FC<IProps> = (props) => {
   // 动态表单内容
   const formItems = props.config.map((item, index) => {
     return (
-      <Col
-        xs={24}
-        sm={24}
-        md={12}
-        lg={8}
-        xl={6}
-        key={index}
-        hidden={item.hidden}
-      >
+      <Col xs={24} sm={24} md={12} lg={8} xl={6} key={index} hidden={item.hidden}>
         <Form.Item name={item.fieldName} label={item.label} rules={item.rules}>
           {(() => {
             switch (item.itemType) {
@@ -77,42 +67,30 @@ const TableSearchForm: FC<IProps> = (props) => {
 
   return (
     <>
-      <Form
-        form={form}
-        name="search-form"
-        style={formStyle}
-        labelAlign="right"
-        onFinish={onFinish}
-      >
+      <Form form={form} name="search-form" style={formStyle} labelAlign="right" onFinish={onFinish}>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           {formItems}
-          {formItems &&
-            formItems.length > 0 &&
-            props.config.filter((item) => !item.hidden).length > 0 && (
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Space>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={props.loading}
-                  >
-                    查询
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      form.resetFields()
-                      form.submit()
-                    }}
-                  >
-                    重置
-                  </Button>
-                </Space>
-              </Col>
-            )}
+          {formItems && formItems.length > 0 && props.config.filter((item) => !item.hidden).length > 0 && (
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Space>
+                <Button type="primary" htmlType="submit" loading={props.loading}>
+                  查询
+                </Button>
+                <Button
+                  onClick={() => {
+                    form.resetFields()
+                    form.submit()
+                  }}
+                >
+                  重置
+                </Button>
+              </Space>
+            </Col>
+          )}
         </Row>
       </Form>
     </>
   )
 }
 
-export default memo(TableSearchForm)
+export default TableSearchForm
