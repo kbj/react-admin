@@ -14,7 +14,7 @@ export function usePage<T>(service: (...args: any[]) => Promise<ICommonResponse<
   const [pageSize, setPageSize] = useState<number>(10)
 
   // 数据
-  const [data, setData] = useState<T[]>([])
+  const [data, setData] = useState<ICommonPageResponse<T>>({ pageNum, pageSize, total: 0, records: [] })
 
   // 查询列表结果封装
   const { loading, run } = useRequest(service, {
@@ -23,7 +23,7 @@ export function usePage<T>(service: (...args: any[]) => Promise<ICommonResponse<
     onSuccess: (resp) => {
       setPageNum(resp.data.pageNum)
       setPageSize(resp.data.pageSize)
-      setData(resp.data.records)
+      setData(resp.data)
     }
   })
 
