@@ -11,7 +11,8 @@ import { FormItemType } from '@/components/table-search-form/types'
 import type { ColumnsType } from 'antd/es/table'
 import DictTag from '@/components/dict-tag'
 import { parseTimeStamp } from '@/utils/date'
-import { Button } from 'antd'
+import { Button, Space } from 'antd'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 // 搜索表单配置
 const queryConfig: TableSearchFormItem[] = [
@@ -39,6 +40,9 @@ interface IProps {
   children?: ReactNode
 }
 const User: FC<IProps> = () => {
+  // 表单请求结构
+  const { pageNum, setPageNum, pageSize, setPageSize, data, loading, run } = usePage<IUser>(getUserList)
+
   const searchForm = useRef<ITableSearchFormMethods | null>(null)
   useEffect(() => {
     submit({})
@@ -46,9 +50,6 @@ const User: FC<IProps> = () => {
 
   // 字典
   const sysGender = useDict('sys_gender')
-
-  // 表单请求结构
-  const { pageNum, setPageNum, pageSize, setPageSize, data, loading, run } = usePage<IUser>(getUserList)
 
   // 请求数据
   const submit = (formData: IUserRequest) => run({ ...formData, pageNum, pageSize })
@@ -59,6 +60,19 @@ const User: FC<IProps> = () => {
     pageSize && setPageSize(pageSize)
     searchForm.current?.request()
   }
+
+  // 工具栏按钮
+  const topTool = (
+    <Space wrap>
+      <Button type="primary" icon={<PlusOutlined />}>
+        新增
+      </Button>
+      <Button icon={<EditOutlined />}>编辑</Button>
+      <Button danger icon={<DeleteOutlined />}>
+        删除
+      </Button>
+    </Space>
+  )
 
   // table表格配置
   const tableConfig: ColumnsType<IUser> = [
@@ -77,7 +91,16 @@ const User: FC<IProps> = () => {
       align: 'center',
       fixed: 'right',
       render: (text, record, index) => {
-        return <Button size="small">编辑</Button>
+        return (
+          <>
+            <Button size="small" type="link" icon={<EditOutlined />}>
+              编辑
+            </Button>
+            <Button size="small" type="link" danger icon={<DeleteOutlined />}>
+              删除
+            </Button>
+          </>
+        )
       }
     }
   ]
@@ -86,7 +109,9 @@ const User: FC<IProps> = () => {
     <>
       <TableSearchForm ref={searchForm} config={queryConfig} loading={loading} submit={submit} />
 
-      <CommonTable loading={loading} columns={tableConfig} rowKey={'id'} data={data} tableChange={handleTableChange} />
+      <CommonTable loading={loading} columns={tableConfig} rowKey={'id'} data={data} tableChange={handleTableChange}>
+        {topTool}
+      </CommonTable>
     </>
   )
 }
