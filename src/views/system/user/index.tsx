@@ -1,12 +1,12 @@
 import type { FC, ReactNode } from 'react'
-import React, { memo, useEffect, useRef } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import TableSearchForm from '@/components/table-search-form'
 import { getUserList } from '@/api/system/user'
 import { useDict, usePage } from '@/hooks'
 import type { IUser } from '@/api/types/common'
 import type { IUserRequest } from '@/api/types/system/user'
 import CommonTable from '@/components/common-table'
-import type { ITableSearchFormMethods, TableSearchFormItem } from '@/components/table-search-form/types'
+import type { TableSearchFormItem } from '@/components/table-search-form/types'
 import { FormItemType } from '@/components/table-search-form/types'
 import type { ColumnsType } from 'antd/es/table'
 import DictTag from '@/components/dict-tag'
@@ -40,26 +40,19 @@ interface IProps {
   children?: ReactNode
 }
 const User: FC<IProps> = () => {
+  // 初始化
+  const [needInit, setNeedInit] = useState<boolean>(true)
   // 表单请求结构
-  const { pageNum, setPageNum, pageSize, setPageSize, data, loading, run } = usePage<IUser>(getUserList)
-
-  const searchForm = useRef<ITableSearchFormMethods | null>(null)
-  useEffect(() => {
-    submit({})
-  }, [])
-
+  const { searchForm, query, pageChange, data, loading } = usePage<IUserRequest, IUser>(getUserList)
   // 字典
   const sysGender = useDict('sys_gender')
 
-  // 请求数据
-  const submit = (formData: IUserRequest) => run({ ...formData, pageNum, pageSize })
-
-  // 表格更新事件
-  const handleTableChange = (page?: number, pageSize?: number) => {
-    page && setPageNum(page)
-    pageSize && setPageSize(pageSize)
-    searchForm.current?.request()
-  }
+  useEffect(() => {
+    if (needInit) {
+      searchForm.submit()
+      setNeedInit(false)
+    }
+  }, [])
 
   // 工具栏按钮
   const topTool = (
@@ -107,9 +100,9 @@ const User: FC<IProps> = () => {
 
   return (
     <>
-      <TableSearchForm ref={searchForm} config={queryConfig} loading={loading} submit={submit} />
+      <TableSearchForm form={searchForm} config={queryConfig} loading={loading} query={query} />
 
-      <CommonTable loading={loading} columns={tableConfig} rowKey={'id'} data={data} tableChange={handleTableChange}>
+      <CommonTable loading={loading} columns={tableConfig} rowKey={'id'} data={data} pageChange={pageChange}>
         {topTool}
       </CommonTable>
     </>

@@ -1,5 +1,7 @@
 import type { FormItemProps } from 'antd'
 import type { PropsWithChildren } from 'react'
+import type { IPageRequest } from '@/api/types/common'
+import type { FormInstance } from 'antd/es/form/hooks/useForm'
 
 /**
  * Props类型
@@ -10,7 +12,8 @@ export interface IProps extends PropsWithChildren {
   // 加载状态
   loading?: boolean
   // 提交查询方法
-  submit: (data: any) => void
+  query: <T extends IPageRequest>(data: T) => void
+  form: FormInstance
 }
 
 /**

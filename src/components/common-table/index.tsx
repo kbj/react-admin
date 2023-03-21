@@ -36,7 +36,7 @@ const CommonTable: FC<IProps> = (props) => {
     showSizeChanger: true, // 显示页码切换器
     responsive: true, // 根据屏幕宽度自动调整尺寸
     showTotal: (total) => `共 ${total} 条`, // 显示总数
-    onChange: props.tableChange // 分页器改变方法
+    onChange: (page: number, pageSize: number) => props.pageChange && props.pageChange({ pageNum: page, pageSize }) // 分页器改变方法
   }
 
   return (
@@ -57,7 +57,7 @@ const CommonTable: FC<IProps> = (props) => {
                   icon={<ReloadOutlined />}
                   size="small"
                   type="text"
-                  onClick={() => props.tableChange && props.tableChange()}
+                  onClick={() => props.pageChange && props.pageChange({})}
                 />
               </Tooltip>
               <Tooltip title="密度">

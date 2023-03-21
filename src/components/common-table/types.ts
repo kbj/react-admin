@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 import type { ColumnsType } from 'antd/es/table'
-import type { ICommonPageResponse } from '@/api/types/common'
+import type { ICommonPageResponse, IPageRequest } from '@/api/types/common'
 
 export interface IProps extends PropsWithChildren {
   // rowKey
@@ -16,5 +16,5 @@ export interface IProps extends PropsWithChildren {
   data: ICommonPageResponse
 
   // 分页改变方法
-  tableChange?: (page?: number, pageSize?: number) => void
+  pageChange?: (page: IPageRequest) => void
 }

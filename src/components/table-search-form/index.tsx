@@ -10,10 +10,9 @@ import dayjs from 'dayjs'
 export default memo(
   forwardRef<ITableSearchFormMethods, IProps>((props, ref) => {
     const { token } = theme.useToken()
-    const [form] = Form.useForm()
     // 初始化ref暴露的方法
     useImperativeHandle(ref, () => ({
-      request: () => form.submit()
+      request: () => {}
     }))
 
     // 表单样式
@@ -39,13 +38,13 @@ export default memo(
           }
         }
       }
-      props.submit(values)
+      props.query(values)
     }
 
     // 重置表单功能
     const reset = () => {
-      form.resetFields()
-      form.submit
+      props.form.resetFields()
+      props.form.submit()
     }
 
     // 动态表单内容
@@ -73,7 +72,7 @@ export default memo(
 
     return (
       <>
-        <Form form={form} name="search-form" style={formStyle} labelAlign="right" onFinish={onFinish}>
+        <Form form={props.form} name="search-form" style={formStyle} labelAlign="right" onFinish={onFinish}>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             {formItems}
             {formItems && formItems.length > 0 && props.config.filter((item) => !item.hidden).length > 0 && (

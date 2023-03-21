@@ -1,31 +1,59 @@
 import { useState } from 'react'
 import { useRequest } from 'ahooks'
-import type { ICommonPageResponse, ICommonResponse } from '@/api/types/common'
+import type { ICommonPageResponse, ICommonResponse, IPageRequest } from '@/api/types/common'
+import { Form } from 'antd'
 
 /**
  * 自定义通用列表查询Hooks
  * @param service API请求方法
  */
-export function usePage<T>(service: (...args: any[]) => Promise<ICommonResponse<ICommonPageResponse<T>>>) {
-  // 当前页
-  const [pageNum, setPageNum] = useState<number>(1)
+export function usePage<REQ extends IPageRequest, RESP extends {}>(
+  service: (...args: REQ[]) => Promise<ICommonResponse<ICommonPageResponse<RESP>>>
+) {
+  // 列表搜索表单对象
+  const [searchForm] = Form.useForm<REQ>()
 
-  // 每页长度
-  const [pageSize, setPageSize] = useState<number>(10)
+  // 请求参数
+  const [queryParam, setQueryParam] = useState<REQ>({ pageNum: 1, pageSize: 10 } as REQ)
 
   // 数据
-  const [data, setData] = useState<ICommonPageResponse<T>>({ pageNum, pageSize, total: 0, records: [] })
+  const [data, setData] = useState<ICommonPageResponse<RESP>>({
+    pageNum: queryParam.pageNum || 1,
+    pageSize: queryParam.pageSize || 10,
+    total: 0,
+    records: []
+  })
 
   // 查询列表结果封装
   const { loading, run } = useRequest(service, {
     manual: true,
     loadingDelay: 100,
     onSuccess: (resp) => {
-      setPageNum(resp.data.pageNum)
-      setPageSize(resp.data.pageSize)
+      setQueryParam({ ...queryParam, pageNum: resp.data.pageNum, pageSize: resp.data.pageSize })
       setData(resp.data)
     }
   })
 
-  return { pageNum, setPageNum, pageSize, setPageSize, data, setData, loading, run }
+  // 查询数据接口
+  const query = (param: REQ) => {
+    param.pageNum = param.pageNum || queryParam.pageNum
+    param.pageSize = param.pageSize || queryParam.pageSize
+    run(param)
+  }
+
+  /**
+   * 分页信息更新回调方法
+   * @param page 分页信息
+   */
+  const pageChange = (page: IPageRequest) => {
+    page &&
+      setQueryParam({
+        ...queryParam,
+        pageNum: page.pageNum || queryParam.pageNum,
+        pageSize: page.pageSize || queryParam.pageSize
+      })
+    searchForm.submit()
+  }
+
+  return { searchForm, queryParam, query, pageChange, data, loading }
 }
