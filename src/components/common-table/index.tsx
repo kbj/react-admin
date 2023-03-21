@@ -87,7 +87,11 @@ const CommonTable: FC<IProps> = (props) => {
           size={tableSize as SizeType}
           rowKey={props.rowKey || 'id'}
           loading={props.loading}
-          rowSelection={{ fixed: 'left' }}
+          rowSelection={
+            props.selectedRowKeys
+              ? { fixed: 'left', selectedRowKeys: props.selectedRowKeys, onChange: props.setSelectedRowKeys }
+              : undefined
+          }
           columns={tableColumn}
           dataSource={props.data.records}
           pagination={pageConfig}

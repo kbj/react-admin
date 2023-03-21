@@ -1,8 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
-import type {
-  MyRequestConfig,
-  MyRequestInterceptors
-} from '@/utils/network/types'
+import type { MyRequestConfig, MyRequestInterceptors } from '@/utils/network/types'
+import { ICommonResponse } from '@/api/types/common'
 
 class MyRequest {
   instance: AxiosInstance
@@ -75,19 +73,23 @@ class MyRequest {
     })
   }
 
-  get<T = any>(config: MyRequestConfig<T>): Promise<T> {
+  get<T = ICommonResponse>(config: MyRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'GET' })
   }
 
-  post<T = any>(config: MyRequestConfig<T>): Promise<T> {
+  post<T = ICommonResponse>(config: MyRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'POST' })
   }
 
-  delete<T = any>(config: MyRequestConfig<T>): Promise<T> {
+  put<T = ICommonResponse>(config: MyRequestConfig<T>): Promise<T> {
+    return this.request<T>({ ...config, method: 'PUT' })
+  }
+
+  delete<T = ICommonResponse>(config: MyRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'DELETE' })
   }
 
-  patch<T = any>(config: MyRequestConfig<T>): Promise<T> {
+  patch<T = ICommonResponse>(config: MyRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'PATCH' })
   }
 }

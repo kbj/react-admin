@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Key, useState } from 'react'
 import { useRequest } from 'ahooks'
 import type { ICommonPageResponse, ICommonResponse, IPageRequest } from '@/api/types/common'
 import { Form } from 'antd'
@@ -12,6 +12,9 @@ export function usePage<REQ extends IPageRequest, RESP extends {}>(
 ) {
   // 列表搜索表单对象
   const [searchForm] = Form.useForm<REQ>()
+
+  // 列表多选
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
 
   // 请求参数
   const [queryParam, setQueryParam] = useState<REQ>({ pageNum: 1, pageSize: 10 } as REQ)
@@ -55,5 +58,5 @@ export function usePage<REQ extends IPageRequest, RESP extends {}>(
     searchForm.submit()
   }
 
-  return { searchForm, queryParam, query, pageChange, data, loading }
+  return { searchForm, queryParam, query, pageChange, data, selectedRowKeys, setSelectedRowKeys, loading }
 }
