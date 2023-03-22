@@ -1,8 +1,11 @@
 // 字典搜索表单
-export interface IDictSearch {
-  dictName: string
-  dictType: string
-  enabled: boolean
+import type { IPageRequest } from '@/api/types/common'
+
+// 字典列表搜索表单
+export interface IDictSearch extends IPageRequest {
+  dictName?: string
+  dictType?: string
+  enabled?: boolean
 }
 
 // 字典列表
