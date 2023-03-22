@@ -17,20 +17,13 @@ export interface IProps extends PropsWithChildren {
 }
 
 /**
- * Refs暴露的方法
- */
-export interface ITableSearchFormMethods {
-  // 请求更新
-  request(): void
-}
-
-/**
  * 表单类型枚举定义
  */
 export enum FormItemType {
   Input,
   Date,
-  DateTime
+  DateTime,
+  Select
 }
 
 export interface TableSearchFormItem {
@@ -40,4 +33,5 @@ export interface TableSearchFormItem {
   rules?: FormItemProps['rules'] // 表单校验规则
   hidden?: boolean // 是否隐藏
   default?: any // 默认值
+  list?: { label: string; value: any }[] // 字典显示
 }
