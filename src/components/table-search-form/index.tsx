@@ -1,5 +1,5 @@
 import React, { FC, memo } from 'react'
-import { Button, Col, DatePicker, Form, Input, Row, Space, theme } from 'antd'
+import { Button, Col, DatePicker, Form, Input, Row, Select, Space, theme } from 'antd'
 import type { IProps } from './types'
 import { FormItemType } from './types'
 import dayjs from 'dayjs'
@@ -55,6 +55,9 @@ const TableSearchForm: FC<IProps> = (props) => {
               case FormItemType.DateTime:
                 // 日期附带时间类型
                 return <DatePicker.RangePicker showTime showNow />
+              case FormItemType.Select:
+                // 下拉类型
+                return <Select options={item.list} placeholder={`请选择${item.label}`} />
               default:
                 // 默认和输入类型
                 return <Input placeholder={'请输入' + item.label} />

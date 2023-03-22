@@ -104,28 +104,9 @@ const User: FC<PropsWithChildren> = () => {
     })
   }
 
-  // 工具栏按钮
-  const topTool = (
-    <Space wrap>
-      <Button type="primary" onClick={handleClickAdd} icon={<PlusOutlined />}>
-        新增
-      </Button>
-      <Button disabled={selectedRowKeys.length != 1} onClick={() => handleClickEdit()} icon={<EditOutlined />}>
-        编辑
-      </Button>
-      <Button
-        danger
-        disabled={selectedRowKeys.length < 1}
-        onClick={() => handleClickDelete()}
-        icon={<DeleteOutlined />}
-      >
-        删除
-      </Button>
-    </Space>
-  )
-
   // table表格配置
   const tableConfig: ColumnsType<IUser> = [
+    { title: '序号', align: 'center', render: (text, record, index) => `${index + 1}` },
     { title: '用户名', dataIndex: 'username', align: 'center' },
     { title: '昵称', dataIndex: 'nickName', align: 'center' },
     { title: '手机号码', dataIndex: 'mobile', align: 'center' },
@@ -161,6 +142,71 @@ const User: FC<PropsWithChildren> = () => {
     }
   ]
 
+  // 工具栏按钮
+  const topTool = (
+    <Space wrap>
+      <Button type="primary" onClick={handleClickAdd} icon={<PlusOutlined />}>
+        新增
+      </Button>
+      <Button disabled={selectedRowKeys.length != 1} onClick={() => handleClickEdit()} icon={<EditOutlined />}>
+        编辑
+      </Button>
+      <Button
+        danger
+        disabled={selectedRowKeys.length < 1}
+        onClick={() => handleClickDelete()}
+        icon={<DeleteOutlined />}
+      >
+        删除
+      </Button>
+    </Space>
+  )
+
+  // 弹窗
+  const dialog = (
+    <Form name="form" form={form} autoComplete="off" labelCol={{ span: 2 }}>
+      <Form.Item label="主键" hidden name="id">
+        <InputNumber />
+      </Form.Item>
+      <Form.Item
+        label="用户名"
+        name="username"
+        rules={[{ required: true, pattern: /^[a-zA-Z0-9]{5,16}$/, message: '用户名限制5-16位英文数字' }]}
+      >
+        <Input placeholder="请输入用户名" />
+      </Form.Item>
+      <Form.Item
+        label="密码"
+        name="password"
+        rules={[
+          ({ getFieldValue }) => ({
+            required: !getFieldValue('id'),
+            pattern: /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~\\.!@#$%^&*])[a-zA-Z\d~\\.!@#$%^&*]{8,32}$/,
+            message: '密码长度8-32且必须存在特殊字符、英文、数字'
+          })
+        ]}
+      >
+        <Input.Password placeholder="请输入密码" />
+      </Form.Item>
+      <Form.Item label="性别" name="gender" rules={[{ required: true, message: '请选择性别' }]}>
+        <Select options={sysGender.map((item) => ({ value: item.dictValue, label: item.dictLabel }))} allowClear />
+      </Form.Item>
+      <Form.Item label="昵称" name="nickName" rules={[{ required: false, max: 32, message: '昵称不能超过32个字' }]}>
+        <Input placeholder="请输入昵称" />
+      </Form.Item>
+      {/*<Form.Item label="部门" name="deptId">*/}
+      {/*  <Input placeholder="请输入部门" />*/}
+      {/*</Form.Item>*/}
+      <Form.Item
+        label="手机号"
+        name="mobile"
+        rules={[{ required: false, pattern: /^1\d{10}$/, message: '请输入正确手机号' }]}
+      >
+        <Input placeholder="请输入手机号" />
+      </Form.Item>
+    </Form>
+  )
+
   return (
     <>
       <TableSearchForm form={searchForm} config={queryConfig} loading={loading} query={query} />
@@ -184,49 +230,10 @@ const User: FC<PropsWithChildren> = () => {
         onOk={submit}
         onCancel={handleCancel}
         width={800}
+        bodyStyle={{ paddingTop: '1.2rem' }}
         forceRender
       >
-        <Form name="form" form={form} autoComplete="off" labelCol={{ span: 2 }}>
-          <Form.Item label="主键" hidden name="id">
-            <InputNumber />
-          </Form.Item>
-          <Form.Item
-            label="用户名"
-            name="username"
-            rules={[{ required: true, pattern: /^[a-zA-Z0-9]{5,16}$/, message: '用户名限制5-16位英文数字' }]}
-          >
-            <Input placeholder="请输入用户名" />
-          </Form.Item>
-          <Form.Item
-            label="密码"
-            name="password"
-            rules={[
-              ({ getFieldValue }) => ({
-                required: !getFieldValue('id'),
-                pattern: /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~\\.!@#$%^&*])[a-zA-Z\d~\\.!@#$%^&*]{8,32}$/,
-                message: '密码长度8-32且必须存在特殊字符、英文、数字'
-              })
-            ]}
-          >
-            <Input.Password placeholder="请输入密码" />
-          </Form.Item>
-          <Form.Item label="性别" name="gender" rules={[{ required: true, message: '请选择性别' }]}>
-            <Select options={sysGender.map((item) => ({ value: item.dictValue, label: item.dictLabel }))} allowClear />
-          </Form.Item>
-          <Form.Item label="昵称" name="nickName" rules={[{ required: false, max: 32, message: '昵称不能超过32个字' }]}>
-            <Input placeholder="请输入昵称" />
-          </Form.Item>
-          {/*<Form.Item label="部门" name="deptId">*/}
-          {/*  <Input placeholder="请输入部门" />*/}
-          {/*</Form.Item>*/}
-          <Form.Item
-            label="手机号"
-            name="mobile"
-            rules={[{ required: false, pattern: /^1\d{10}$/, message: '请输入正确手机号' }]}
-          >
-            <Input placeholder="请输入手机号" />
-          </Form.Item>
-        </Form>
+        {dialog}
       </Modal>
     </>
   )

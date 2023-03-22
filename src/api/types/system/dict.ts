@@ -22,6 +22,14 @@ export interface IDictList {
   createTime: number
 }
 
+// 字典表单
+export interface IDictForm {
+  id?: number
+  dictName: string
+  dictType: string
+  enabled: boolean
+}
+
 // 字典值类型
 export interface IDictData {
   // 字典类型

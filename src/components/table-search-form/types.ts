@@ -1,4 +1,4 @@
-import type { FormItemProps } from 'antd'
+import type { FormItemProps, SelectProps } from 'antd'
 import type { PropsWithChildren } from 'react'
 import type { IPageRequest } from '@/api/types/common'
 import type { FormInstance } from 'antd/es/form/hooks/useForm'
@@ -33,5 +33,5 @@ export interface TableSearchFormItem {
   rules?: FormItemProps['rules'] // 表单校验规则
   hidden?: boolean // 是否隐藏
   default?: any // 默认值
-  list?: { label: string; value: any }[] // 字典显示
+  list?: SelectProps['options'] // 字典显示
 }

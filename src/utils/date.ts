@@ -6,5 +6,5 @@ import dayjs from 'dayjs'
  * @param format    时间格式
  */
 export const parseTimeStamp = (timestamp: number, format: string = 'YYYY-MM-DD HH:mm:ss') => {
-  return dayjs(timestamp).format(format)
+  return timestamp ? dayjs(timestamp).format(format) : undefined
 }
