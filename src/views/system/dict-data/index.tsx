@@ -19,26 +19,16 @@ import CommonTable from '@/components/common-table'
 const DictData: FC<PropsWithChildren> = () => {
   const { dictType } = useParams()
   const [commonStatus, commonStatusSelect] = useDict('sys_common_status')
-  const [tagType, tagTypeSelect] = useDict('sys_tag_type')
-  const {
-    data,
-    init,
-    loading,
-    pageChange,
-    query,
-    queryParam,
-    searchForm,
-    selectedRowKeys,
-    setInit,
-    setSelectedRowKeys
-  } = usePage<IDictDataSearch, IDictData>(listDictData)
+  const [, tagTypeSelect] = useDict('sys_tag_type')
+  const { data, init, loading, pageChange, query, searchForm, selectedRowKeys, setInit, setSelectedRowKeys } = usePage<
+    IDictDataSearch,
+    IDictData
+  >(listDictData, { dictType, orderBy: 'dict_sort' })
   const { confirmLoading, deleteConfirm, open, setConfirmLoading, setOpen, setTitle, title } = useModal()
 
   useEffect(() => {
     if (!init) {
       setInit(true)
-      searchForm.setFieldValue('dictType', dictType) // 初始化字典类型
-      searchForm.setFieldValue('orderBy', 'dict_sort') // 字典排序
       searchForm.submit()
     }
   }, [])
@@ -94,18 +84,6 @@ const DictData: FC<PropsWithChildren> = () => {
 
   // 搜索表单配置
   const queryConfig: TableSearchFormItem[] = [
-    {
-      itemType: FormItemType.Input,
-      label: '字典类型',
-      fieldName: 'dictType',
-      hidden: true
-    },
-    {
-      itemType: FormItemType.Input,
-      label: '列表排序',
-      fieldName: 'orderBy',
-      hidden: true
-    },
     {
       itemType: FormItemType.Input,
       label: '字典标签',

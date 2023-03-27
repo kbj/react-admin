@@ -6,9 +6,11 @@ import { Form } from 'antd'
 /**
  * 自定义通用列表查询Hooks
  * @param service API请求方法
+ * @param alwaysValue 固定值
  */
 export function usePage<REQ extends IPageRequest, RESP extends {}>(
-  service: (...args: REQ[]) => Promise<ICommonResponse<ICommonPageResponse<RESP>>>
+  service: (...args: REQ[]) => Promise<ICommonResponse<ICommonPageResponse<RESP>>>,
+  alwaysValue?: {}
 ) {
   // 初始化
   const [init, setInit] = useState<boolean>(false)
@@ -44,6 +46,7 @@ export function usePage<REQ extends IPageRequest, RESP extends {}>(
   const query = (param: REQ) => {
     param.pageNum = param.pageNum || queryParam.pageNum
     param.pageSize = param.pageSize || queryParam.pageSize
+    param = alwaysValue ? { ...param, ...alwaysValue } : param // 固定值
     run(param)
   }
 
