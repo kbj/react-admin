@@ -1,4 +1,4 @@
-import type { FC, ReactNode } from 'react'
+import type { FC, PropsWithChildren } from 'react'
 import React, { memo, useEffect, useState } from 'react'
 import { Tabs, theme } from 'antd'
 import { DivWrapper } from '@/views/main/main-nav-tab/style'
@@ -9,11 +9,7 @@ import type { NavTab } from '@/api/types/common'
 import { KeepAliveContainer } from '@/global/keep-alive'
 import { useRouteStore } from '@/store/common/route'
 
-interface IProps {
-  children?: ReactNode
-}
-
-const MainNavTab: FC<IProps> = () => {
+const MainNavTab: FC<PropsWithChildren> = () => {
   const {
     token: { colorBgContainer, colorPrimary }
   } = theme.useToken()
@@ -35,16 +31,13 @@ const MainNavTab: FC<IProps> = () => {
       return
     }
     // 根据当前路径查询路由对象
-    const currentRoute = searchRouteDetail(
-      pathname,
-      routeList[0].children || []
-    )
+    const currentRoute = searchRouteDetail(pathname, routeList[0].children || [])
     if (!currentRoute) {
       return
     }
 
     // 判断是否已存在
-    if (navTabs.filter((tabs) => tabs.path.indexOf(pathname) > -1).length < 1) {
+    if (navTabs.filter((tabs) => tabs.path === pathname).length < 1) {
       // 不存在添加进tab列表中
       addNavTabAction({
         title: currentRoute.meta?.title || pathname,
@@ -68,8 +61,7 @@ const MainNavTab: FC<IProps> = () => {
     }
 
     // 删除第一个跳转到第二个去，删除其他的往左边跳转
-    const nextPath =
-      index === 0 ? copyNavTabs[1].path : copyNavTabs[index - 1].path
+    const nextPath = index === 0 ? copyNavTabs[1].path : copyNavTabs[index - 1].path
     copyNavTabs.splice(index, 1)
     updateNavTabAction(copyNavTabs)
 
@@ -87,10 +79,7 @@ const MainNavTab: FC<IProps> = () => {
 
   return (
     <>
-      <DivWrapper
-        primaryColor={colorPrimary}
-        backGroundColor={colorBgContainer}
-      >
+      <DivWrapper primaryColor={colorPrimary} backGroundColor={colorBgContainer}>
         <Tabs
           type="editable-card"
           hideAdd

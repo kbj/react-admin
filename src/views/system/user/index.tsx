@@ -1,5 +1,5 @@
 import type { FC, PropsWithChildren } from 'react'
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect } from 'react'
 import TableSearchForm from '@/components/table-search-form'
 import { deleteUser, getUser, getUserList, saveUser, updateUser } from '@/api/system/user'
 import { useDict, useModal, usePage } from '@/hooks'
@@ -37,22 +37,20 @@ const queryConfig: TableSearchFormItem[] = [
  * 用户管理
  */
 const User: FC<PropsWithChildren> = () => {
-  // 初始化
-  const [needInit, setNeedInit] = useState<boolean>(true)
   // 表单请求结构
-  const { searchForm, query, pageChange, data, loading, selectedRowKeys, setSelectedRowKeys } = usePage<
+  const { init, setInit, searchForm, query, pageChange, data, loading, selectedRowKeys, setSelectedRowKeys } = usePage<
     IUserRequest,
     IUser
   >(getUserList)
   // 弹窗
   const { open, setOpen, setTitle, title, confirmLoading, setConfirmLoading, deleteConfirm } = useModal()
   // 字典
-  const sysGender = useDict('sys_gender')
+  const [sysGender, sysGenderSelect] = useDict('sys_gender')
 
   useEffect(() => {
-    if (needInit) {
+    if (!init) {
       searchForm.submit()
-      setNeedInit(false)
+      setInit(true)
     }
   }, [])
 
@@ -189,7 +187,7 @@ const User: FC<PropsWithChildren> = () => {
         <Input.Password placeholder="请输入密码" />
       </Form.Item>
       <Form.Item label="性别" name="gender" rules={[{ required: true, message: '请选择性别' }]}>
-        <Select options={sysGender.map((item) => ({ value: item.dictValue, label: item.dictLabel }))} allowClear />
+        <Select options={sysGenderSelect} allowClear />
       </Form.Item>
       <Form.Item label="昵称" name="nickName" rules={[{ required: false, max: 32, message: '昵称不能超过32个字' }]}>
         <Input placeholder="请输入昵称" />

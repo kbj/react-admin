@@ -13,7 +13,21 @@ const DictTag: FC<IProps> = (props) => {
   const dicts = props.list.filter((dict) => dict.dictValue === props.data)
   const dict = dicts && dicts.length > 0 ? dicts[0] : null
 
-  return <>{dict ? dict.tagType ? <Tag color={dict.tagType}>{dict.dictLabel}</Tag> : dict.dictLabel : ''}</>
+  return (
+    <>
+      {dict ? (
+        dict.tagType ? (
+          <Tag style={{ marginRight: 0 }} color={dict.tagType}>
+            {dict.dictLabel}
+          </Tag>
+        ) : (
+          dict.dictLabel
+        )
+      ) : (
+        ''
+      )}
+    </>
+  )
 }
 
 export default memo(DictTag)

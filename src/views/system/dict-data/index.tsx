@@ -1,49 +1,62 @@
 import type { FC, PropsWithChildren } from 'react'
 import React, { memo, useEffect } from 'react'
-import { FormItemType, TableSearchFormItem } from '@/components/table-search-form/types'
+import { useParams } from 'react-router-dom'
 import { useDict, useModal, usePage } from '@/hooks'
-import type { IDictForm, IDictList, IDictSearch } from '@/api/types/system/dict'
-import { addDict, deleteDict, getDict, listDict, updateDict } from '@/api/system/dict'
-import TableSearchForm from '@/components/table-search-form'
-import type { ColumnsType } from 'antd/es/table'
-import { NavLink } from 'react-router-dom'
-import { parseTimeStamp } from '@/utils/date'
-import CommonTable from '@/components/common-table'
+import type { IDictData, IDictDataForm, IDictDataSearch } from '@/api/types/system/dict'
+import { addDictData, deleteDictData, getDictData, listDictData, updateDictData } from '@/api/system/dict'
 import { Button, Form, Input, InputNumber, message, Modal, Select, Space } from 'antd'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import TableSearchForm from '@/components/table-search-form'
+import { FormItemType, TableSearchFormItem } from '@/components/table-search-form/types'
+import { ColumnsType } from 'antd/es/table'
 import DictTag from '@/components/dict-tag'
+import { parseTimeStamp } from '@/utils/date'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import CommonTable from '@/components/common-table'
 
 /**
- * 字典管理
+ * 字典值
  */
-const Dict: FC<PropsWithChildren> = () => {
-  const { init, setInit, searchForm, query, pageChange, data, loading, selectedRowKeys, setSelectedRowKeys } = usePage<
-    IDictSearch,
-    IDictList
-  >(listDict)
+const DictData: FC<PropsWithChildren> = () => {
+  const { dictType } = useParams()
+  const [commonStatus, commonStatusSelect] = useDict('sys_common_status')
+  const [tagType, tagTypeSelect] = useDict('sys_tag_type')
+  const {
+    data,
+    init,
+    loading,
+    pageChange,
+    query,
+    queryParam,
+    searchForm,
+    selectedRowKeys,
+    setInit,
+    setSelectedRowKeys
+  } = usePage<IDictDataSearch, IDictData>(listDictData)
   const { confirmLoading, deleteConfirm, open, setConfirmLoading, setOpen, setTitle, title } = useModal()
 
   useEffect(() => {
     if (!init) {
-      searchForm.submit()
       setInit(true)
+      searchForm.setFieldValue('dictType', dictType) // 初始化字典类型
+      searchForm.setFieldValue('orderBy', 'dict_sort') // 字典排序
+      searchForm.submit()
     }
   }, [])
-  const [commonStatus, commonStatusSelect] = useDict('sys_common_status')
+
   // 弹窗
-  const [form] = Form.useForm<IDictForm>()
+  const [form] = Form.useForm<IDictDataForm>()
 
   // 新增按钮
   const handleClickAdd = () => {
     form.resetFields()
-    setTitle('新增字典')
+    setTitle('新增字典数据')
     setOpen(true)
   }
   // 编辑按钮
   const handleClickEdit = (id?: number) => {
     form.resetFields()
-    getDict(id || (selectedRowKeys[0] as number)).then((resp) => {
-      setTitle('编辑字典')
+    getDictData(id || (selectedRowKeys[0] as number)).then((resp) => {
+      setTitle('编辑字典数据')
       form.setFieldsValue(resp.data)
       setOpen(true)
     })
@@ -51,11 +64,16 @@ const Dict: FC<PropsWithChildren> = () => {
   // 删除按钮
   const handleClickDelete = (id?: number) => {
     deleteConfirm(() => {
-      deleteDict(id ? [id] : (selectedRowKeys as number[])).then(() => {
+      deleteDictData(id ? [id] : (selectedRowKeys as number[])).then(() => {
         message.success('删除成功')
         searchForm.submit()
       })
     })
+  }
+  // 取消按钮
+  const handleCancel = () => {
+    setConfirmLoading(false)
+    setOpen(false)
   }
 
   // 保存
@@ -63,7 +81,7 @@ const Dict: FC<PropsWithChildren> = () => {
     form.validateFields().then((values) => {
       setConfirmLoading(true)
       // 新增/编辑
-      const action = values.id ? updateDict : addDict
+      const action = values.id ? updateDictData : addDictData
       action(values)
         .then(() => {
           message.success('保存成功')
@@ -73,41 +91,34 @@ const Dict: FC<PropsWithChildren> = () => {
         .finally(() => setConfirmLoading(false))
     })
   }
-  const handleCancel = () => {
-    setConfirmLoading(false)
-    setOpen(false)
-  }
 
   // 搜索表单配置
   const queryConfig: TableSearchFormItem[] = [
     {
       itemType: FormItemType.Input,
-      label: '字典名称',
-      fieldName: 'dictName'
+      label: '字典类型',
+      fieldName: 'dictType',
+      hidden: true
     },
     {
       itemType: FormItemType.Input,
-      label: '字典类型',
-      fieldName: 'dictType'
+      label: '列表排序',
+      fieldName: 'orderBy',
+      hidden: true
     },
     {
-      itemType: FormItemType.Select,
-      label: '状态',
-      fieldName: 'enabled',
-      list: commonStatusSelect
+      itemType: FormItemType.Input,
+      label: '字典标签',
+      fieldName: 'dictLabel'
     }
   ]
 
   // table表格配置
-  const tableConfig: ColumnsType<IDictList> = [
+  const tableConfig: ColumnsType<IDictData> = [
     { title: '序号', align: 'center', render: (text, record, index) => `${index + 1}` },
-    { title: '字典名称', dataIndex: 'dictName', align: 'center' },
-    {
-      title: '字典类型',
-      dataIndex: 'dictType',
-      align: 'center',
-      render: (text) => <NavLink to={`/system/dict-data/${text}`}>{text}</NavLink>
-    },
+    { title: '字典标签', dataIndex: 'dictLabel', align: 'center' },
+    { title: '字典键值', dataIndex: 'dictValue', align: 'center' },
+    { title: '字典排序', dataIndex: 'dictSort', align: 'center' },
     {
       title: '状态',
       dataIndex: 'enabled',
@@ -161,23 +172,38 @@ const Dict: FC<PropsWithChildren> = () => {
 
   // 弹窗
   const dialog = (
-    <Form name="form" form={form} autoComplete="off" initialValues={{ enabled: '1' }} labelCol={{ span: 4 }}>
+    <Form
+      name="form"
+      form={form}
+      autoComplete="off"
+      initialValues={{ dictSort: 1, dictType, enabled: '1' }}
+      labelCol={{ span: 4 }}
+    >
       <Form.Item label="主键" hidden name="id">
         <InputNumber />
       </Form.Item>
+      <Form.Item label="字典类型" name="dictType">
+        <Input disabled />
+      </Form.Item>
       <Form.Item
-        label="字典名称"
-        name="dictName"
-        rules={[{ required: true, max: 100, message: '字典名称长度不能超过100' }]}
+        label="字典标签"
+        name="dictLabel"
+        rules={[{ required: true, max: 100, message: '字典标签长度不能超过100' }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
-        label="字典类型"
-        name="dictType"
-        rules={[{ required: true, max: 100, message: '字典类型长度不能超过100' }]}
+        label="字典键值"
+        name="dictValue"
+        rules={[{ required: true, max: 100, message: '字典键值长度不能超过100' }]}
       >
         <Input />
+      </Form.Item>
+      <Form.Item label="排序" name="dictSort" rules={[{ required: true, message: '请输入排序' }]}>
+        <InputNumber />
+      </Form.Item>
+      <Form.Item label="标签类型" name="tagType">
+        <Select options={tagTypeSelect} allowClear />
       </Form.Item>
       <Form.Item label="状态" name="enabled">
         <Select options={commonStatusSelect} />
@@ -216,4 +242,4 @@ const Dict: FC<PropsWithChildren> = () => {
   )
 }
 
-export default memo(Dict)
+export default memo(DictData)

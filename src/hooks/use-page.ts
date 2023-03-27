@@ -10,6 +10,9 @@ import { Form } from 'antd'
 export function usePage<REQ extends IPageRequest, RESP extends {}>(
   service: (...args: REQ[]) => Promise<ICommonResponse<ICommonPageResponse<RESP>>>
 ) {
+  // 初始化
+  const [init, setInit] = useState<boolean>(false)
+
   // 列表搜索表单对象
   const [searchForm] = Form.useForm<REQ>()
 
@@ -58,5 +61,16 @@ export function usePage<REQ extends IPageRequest, RESP extends {}>(
     searchForm.submit()
   }
 
-  return { searchForm, queryParam, query, pageChange, data, selectedRowKeys, setSelectedRowKeys, loading }
+  return {
+    init,
+    setInit,
+    searchForm,
+    queryParam,
+    query,
+    pageChange,
+    data,
+    selectedRowKeys,
+    setSelectedRowKeys,
+    loading
+  }
 }
