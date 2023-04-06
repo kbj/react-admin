@@ -13,7 +13,7 @@ export interface IProps extends PropsWithChildren {
   columns: ColumnsType<any>
 
   // table展示的数据
-  data: ICommonPageResponse
+  data: ICommonPageResponse | any[]
 
   // 分页改变方法
   pageChange?: (page: IPageRequest) => void
@@ -23,4 +23,10 @@ export interface IProps extends PropsWithChildren {
 
   // 多选变动事件
   setSelectedRowKeys?: Dispatch<SetStateAction<Key[]>>
+
+  // 树列表情况下展开的Key
+  expandedRowKeys?: readonly Key[]
+
+  // 树列表情况下展开状态变更方法
+  onExpandedRowsChange?: (keys: readonly Key[]) => void
 }

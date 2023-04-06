@@ -1,12 +1,13 @@
 import type { FC } from 'react'
 import React, { memo, useState } from 'react'
-import type { MenuProps, TablePaginationConfig } from 'antd'
+import type { MenuProps, TablePaginationConfig, TableProps } from 'antd'
 import { Button, Dropdown, Space, Table, theme, Tooltip } from 'antd'
 import { ColumnHeightOutlined, ReloadOutlined } from '@ant-design/icons'
 import type { SizeType } from 'antd/es/config-provider/SizeContext'
 import type { IProps } from './types'
 import { ColumnsType } from 'antd/es/table'
 import ColumnSetting from './column-setting'
+import { ICommonPageResponse } from '@/api/types/common'
 
 /**
  * 项目用Table自封装
@@ -27,16 +28,23 @@ const CommonTable: FC<IProps> = (props) => {
 
   // 分页器设置
   const pageConfig: TablePaginationConfig = {
-    position: ['bottomRight'],
+    position: Array.isArray(props.data) ? [] : ['bottomRight'], // 直接传的就是数组说明不需要分页
     showQuickJumper: true, // 启用快速跳转
-    current: props.data.pageNum, // 当前页
-    pageSize: props.data.pageSize, // 每页大小
-    total: props.data.total, // 总数
+    current: (props.data as ICommonPageResponse).pageNum, // 当前页
+    pageSize: (props.data as ICommonPageResponse).pageSize, // 每页大小
+    total: (props.data as ICommonPageResponse).total, // 总数
     hideOnSinglePage: false, // 只有一页时是否隐藏分页器
     showSizeChanger: true, // 显示页码切换器
     responsive: true, // 根据屏幕宽度自动调整尺寸
     showTotal: (total) => `共 ${total} 条`, // 显示总数
     onChange: (page: number, pageSize: number) => props.pageChange && props.pageChange({ pageNum: page, pageSize }) // 分页器改变方法
+  }
+  // 树形结构展开设置
+  const expandConfig: Required<TableProps<any>>['expandable'] = {
+    defaultExpandAllRows: true,
+    indentSize: 45,
+    expandedRowKeys: props.expandedRowKeys,
+    onExpandedRowsChange: props.onExpandedRowsChange
   }
 
   return (
@@ -87,13 +95,14 @@ const CommonTable: FC<IProps> = (props) => {
           size={tableSize as SizeType}
           rowKey={props.rowKey || 'id'}
           loading={props.loading}
+          expandable={expandConfig}
           rowSelection={
             props.selectedRowKeys
               ? { fixed: 'left', selectedRowKeys: props.selectedRowKeys, onChange: props.setSelectedRowKeys }
               : undefined
           }
           columns={tableColumn}
-          dataSource={props.data.records}
+          dataSource={Array.isArray(props.data) ? props.data : (props.data as ICommonPageResponse).records}
           pagination={pageConfig}
         />
       </div>

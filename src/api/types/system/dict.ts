@@ -5,7 +5,7 @@ import type { IPageRequest } from '@/api/types/common'
 export interface IDictSearch extends IPageRequest {
   dictName?: string
   dictType?: string
-  enabled?: boolean
+  enabled?: string
 }
 
 // 字典列表
