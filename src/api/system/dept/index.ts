@@ -25,7 +25,7 @@ export function addDept(data: IDeptForm) {
   })
 }
 
-// 编辑字典
+// 编辑
 export function updateDept(data: IDeptForm) {
   return api.put<ICommonResponse>({
     url: '/system/dept',
@@ -33,7 +33,7 @@ export function updateDept(data: IDeptForm) {
   })
 }
 
-// 删除字典
+// 删除
 export function deleteDept(ids: number[]) {
   return api.delete<ICommonResponse>({
     url: `/system/dept/${ids}`

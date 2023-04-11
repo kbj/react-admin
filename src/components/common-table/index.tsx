@@ -42,7 +42,7 @@ const CommonTable: FC<IProps> = (props) => {
   // 树形结构展开设置
   const expandConfig: Required<TableProps<any>>['expandable'] = {
     defaultExpandAllRows: true,
-    indentSize: 45,
+    indentSize: 30,
     expandedRowKeys: props.expandedRowKeys,
     onExpandedRowsChange: props.onExpandedRowsChange
   }

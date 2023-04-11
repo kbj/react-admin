@@ -9,7 +9,7 @@ import type { ColumnsType } from 'antd/es/table'
 import { NavLink } from 'react-router-dom'
 import { parseTimeStamp } from '@/utils/date'
 import CommonTable from '@/components/common-table'
-import { Button, Form, Input, InputNumber, message, Modal, Select, Space } from 'antd'
+import { Button, Form, Input, InputNumber, message, Modal, Radio, Space } from 'antd'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import DictTag from '@/components/dict-tag'
 
@@ -180,7 +180,11 @@ const Dict: FC<PropsWithChildren> = () => {
         <Input />
       </Form.Item>
       <Form.Item label="状态" name="enabled">
-        <Select options={commonStatusSelect} />
+        <Radio.Group>
+          {commonStatus.map((item) => (
+            <Radio value={item.dictValue}>{item.dictLabel}</Radio>
+          ))}
+        </Radio.Group>
       </Form.Item>
     </Form>
   )

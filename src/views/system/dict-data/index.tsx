@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useDict, useModal, usePage } from '@/hooks'
 import type { IDictData, IDictDataForm, IDictDataSearch } from '@/api/types/system/dict'
 import { addDictData, deleteDictData, getDictData, listDictData, updateDictData } from '@/api/system/dict'
-import { Button, Form, Input, InputNumber, message, Modal, Select, Space } from 'antd'
+import { Button, Form, Input, InputNumber, message, Modal, Radio, Select, Space } from 'antd'
 import TableSearchForm from '@/components/table-search-form'
 import { FormItemType, TableSearchFormItem } from '@/components/table-search-form/types'
 import { ColumnsType } from 'antd/es/table'
@@ -184,7 +184,11 @@ const DictData: FC<PropsWithChildren> = () => {
         <Select options={tagTypeSelect} allowClear />
       </Form.Item>
       <Form.Item label="状态" name="enabled">
-        <Select options={commonStatusSelect} />
+        <Radio.Group>
+          {commonStatus.map((item) => (
+            <Radio value={item.dictValue}>{item.dictLabel}</Radio>
+          ))}
+        </Radio.Group>
       </Form.Item>
     </Form>
   )

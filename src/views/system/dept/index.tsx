@@ -11,9 +11,12 @@ import type { ColumnsType } from 'antd/es/table'
 import DictTag from '@/components/dict-tag'
 import { buildTree, parseTimeStamp } from '@/utils'
 import CommonTable from '@/components/common-table'
-import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Space, TreeSelect } from 'antd'
+import { Button, Col, Form, Input, InputNumber, message, Modal, Radio, Row, Space, TreeSelect } from 'antd'
 import { ClusterOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
+/**
+ * 部门管理
+ */
 const Dept: FC<PropsWithChildren> = () => {
   const [commonStatus, commonStatusSelect] = useDict('sys_common_status')
   const { data, init, loading, query, searchForm, setInit } = useNoPage<IDeptSearch, IDeptList>(listDept)
@@ -232,7 +235,13 @@ const Dept: FC<PropsWithChildren> = () => {
         </Col>
       </Row>
       <Form.Item label="状态" name="enabled">
-        <Select options={commonStatusSelect} />
+        <Radio.Group>
+          {commonStatus.map((item) => (
+            <Radio value={item.dictValue} key={item.dictValue}>
+              {item.dictLabel}
+            </Radio>
+          ))}
+        </Radio.Group>
       </Form.Item>
     </Form>
   )
