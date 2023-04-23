@@ -8,3 +8,8 @@ export enum MenuType {
   MENU = 'M', // 菜单
   BUTTON = 'B' // 按钮
 }
+
+export enum CommonStatus {
+  TRUE = '1',
+  FALSE = '0'
+}

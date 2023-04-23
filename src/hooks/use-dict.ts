@@ -2,7 +2,7 @@ import type { Key } from 'react'
 import { useState } from 'react'
 import type { IDictData } from '@/api/types/system/dict'
 import { useRequest } from 'ahooks'
-import { DictTypeList } from '@/api/common'
+import { dictTypeList } from '@/api/common'
 
 /**
  * 业务字典Hooks
@@ -13,7 +13,7 @@ export function useDict(dictType: string): [IDictData[], { value: Key; label: st
   // 给下拉使用列表
   const [dictSelect, setDictSelect] = useState<{ value: Key; label: string }[]>([])
 
-  useRequest(DictTypeList, {
+  useRequest(dictTypeList, {
     defaultParams: [dictType],
     onSuccess: (data) => {
       setDict(data.data)
