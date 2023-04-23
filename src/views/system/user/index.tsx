@@ -1,5 +1,5 @@
 import type { FC, PropsWithChildren } from 'react'
-import React, { memo, useEffect } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import TableSearchForm from '@/components/table-search-form'
 import { deleteUser, getUser, getUserList, saveUser, updateUser } from '@/api/system/user'
 import { useDict, useModal, usePage } from '@/hooks'
@@ -10,9 +10,11 @@ import type { TableSearchFormItem } from '@/components/table-search-form/types'
 import { FormItemType } from '@/components/table-search-form/types'
 import type { ColumnsType } from 'antd/es/table'
 import DictTag from '@/components/dict-tag'
-import { parseTimeStamp } from '@/utils/date'
-import { Button, Form, Input, InputNumber, message, Modal, Select, Space } from 'antd'
+import { buildTree, parseTimeStamp } from '@/utils'
+import { Button, Form, Input, InputNumber, message, Modal, Select, Space, TreeSelect } from 'antd'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import type { IDeptList } from '@/api/types/system/dept'
+import { listDept } from '@/api/system/dept'
 
 // 搜索表单配置
 const queryConfig: TableSearchFormItem[] = [
@@ -46,6 +48,8 @@ const User: FC<PropsWithChildren> = () => {
   const { open, setOpen, setTitle, title, confirmLoading, setConfirmLoading, deleteConfirm } = useModal()
   // 字典
   const [sysGender, sysGenderSelect] = useDict('sys_gender')
+  // 部门树列表
+  const [dataTree, setDataTree] = useState<IDeptList[]>([])
 
   useEffect(() => {
     if (!init) {
@@ -79,12 +83,14 @@ const User: FC<PropsWithChildren> = () => {
 
   // 新增按钮点击
   const handleClickAdd = () => {
+    requestDeptTree()
     form.resetFields()
     setTitle('新增用户')
     setOpen(true)
   }
   // 编辑按钮点击
   const handleClickEdit = (id?: number) => {
+    requestDeptTree()
     form.resetFields()
     getUser(id || (selectedRowKeys[0] as number)).then((resp) => {
       setTitle('编辑用户')
@@ -99,6 +105,15 @@ const User: FC<PropsWithChildren> = () => {
         message.success('删除成功')
         searchForm.submit()
       })
+    })
+  }
+
+  /**
+   * 请求部门树
+   */
+  const requestDeptTree = () => {
+    listDept({ enabled: '1' }).then((response) => {
+      setDataTree(buildTree(response.data))
     })
   }
 
@@ -192,9 +207,17 @@ const User: FC<PropsWithChildren> = () => {
       <Form.Item label="昵称" name="nickName" rules={[{ required: false, max: 32, message: '昵称不能超过32个字' }]}>
         <Input placeholder="请输入昵称" />
       </Form.Item>
-      {/*<Form.Item label="部门" name="deptId">*/}
-      {/*  <Input placeholder="请输入部门" />*/}
-      {/*</Form.Item>*/}
+      <Form.Item label="部门" name="deptId">
+        <TreeSelect
+          showSearch
+          style={{ width: '100%' }}
+          fieldNames={{ label: 'deptName', value: 'id' }}
+          dropdownStyle={{ overflow: 'auto' }}
+          placeholder="选择部门"
+          treeDefaultExpandAll
+          treeData={dataTree}
+        />
+      </Form.Item>
       <Form.Item
         label="手机号"
         name="mobile"
