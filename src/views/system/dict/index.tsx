@@ -182,7 +182,9 @@ const Dict: FC<PropsWithChildren> = () => {
       <Form.Item label="状态" name="enabled">
         <Radio.Group>
           {commonStatus.map((item) => (
-            <Radio value={item.dictValue}>{item.dictLabel}</Radio>
+            <Radio value={item.dictValue} key={item.dictValue}>
+              {item.dictLabel}
+            </Radio>
           ))}
         </Radio.Group>
       </Form.Item>
