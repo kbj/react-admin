@@ -11,7 +11,7 @@ const globalRouters: AuthRouteObject[] = [
   {
     path: '/',
     element: lazyLoad('/main'),
-    meta: { title: '首页' },
+    meta: { title: '首页', isCache: true },
     children: []
   },
   {
@@ -63,7 +63,7 @@ const mergeDefaultMenuRoute = (target?: AuthRouteObject[]) => {
   const homeRoute = [
     {
       path: '/main/home',
-      meta: { title: '首页', key: 'home', anonymous: true },
+      meta: { title: '首页', key: 'home', anonymous: true, isCache: true },
       element: <Home />
     }
   ]

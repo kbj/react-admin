@@ -16,6 +16,9 @@ export interface IMenu {
   permissionFlag?: string // 权限标识
   path?: string // 路由地址
   component?: string // 组件地址
+  isFrame?: boolean // 是否外链
+  query?: string // 路由参数
+  isCache?: boolean // 是否缓存
 }
 
 /**

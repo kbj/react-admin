@@ -8,9 +8,7 @@ import { iconToElement } from '@/utils/icon'
  * 接口返回的菜单列表生成ReactRouter所需的路由对象
  * @param menuLists 接口返回菜单列表
  */
-export const menu2Routes = (
-  menuLists: IMenu[]
-): AuthRouteObject[] | undefined => {
+export const menu2Routes = (menuLists: IMenu[]): AuthRouteObject[] | undefined => {
   return (
     menuLists
       // 路由只需要提取是菜单类型
@@ -20,7 +18,7 @@ export const menu2Routes = (
         return {
           path: fullPath + menu.path,
           element: lazyLoad(menu.component as string),
-          meta: { title: menu.menuName, key: menu.id + '', treePath }
+          meta: { title: menu.menuName, key: menu.id + '', treePath, isCache: menu.isCache }
         }
       })
   )
@@ -58,18 +56,9 @@ function getFullPath(
  * @param menuList  菜单列表
  * @param parentId 初始父ID
  */
-export function menu2AntdMenu(
-  menuList: IMenu[],
-  parentId: number = 0
-): AntdMenuItem[] | undefined {
+export function menu2AntdMenu(menuList: IMenu[], parentId: number = 0): AntdMenuItem[] | undefined {
   const item = menuList
-    .filter(
-      (menu) =>
-        menu.parentId === parentId &&
-        menu.menuType !== MenuType.BUTTON &&
-        menu.path &&
-        menu.visible
-    )
+    .filter((menu) => menu.parentId === parentId && menu.menuType !== MenuType.BUTTON && menu.path && menu.visible)
     .map((menu) => {
       return getItem(
         menu.menuName,

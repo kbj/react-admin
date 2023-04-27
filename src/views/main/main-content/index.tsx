@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react'
 import React, { memo } from 'react'
-import { useOutlet } from 'react-router-dom'
+import { useLocation, useOutlet } from 'react-router-dom'
 import { Layout } from 'antd'
 import KeepAlive from '@/components/keep-alive'
 
@@ -10,6 +10,7 @@ interface IProps {
 
 const MainContent: FC<IProps> = () => {
   const outlet = useOutlet()
+  const location = useLocation()
 
   return (
     <Layout.Content
@@ -18,7 +19,7 @@ const MainContent: FC<IProps> = () => {
         minHeight: 280
       }}
     >
-      <KeepAlive exclude={['/login']}>{outlet}</KeepAlive>
+      <KeepAlive activeName={location.pathname}>{outlet}</KeepAlive>
     </Layout.Content>
   )
 }

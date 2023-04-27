@@ -23,6 +23,11 @@ export interface RouteMeta {
    * 路由树中各层ID
    */
   treePath?: string[]
+
+  /**
+   * 是否缓存
+   */
+  isCache?: boolean
 }
 
 /**
