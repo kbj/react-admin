@@ -22,34 +22,12 @@ export interface IMenu {
 }
 
 /**
- * 角色信息
- */
-export interface IRole {
-  id: number
-  name: string
-  intro: string
-  createAt: string
-  updateAt: string
-}
-
-/**
- * 部门信息
- */
-export interface IDepartment {
-  id: number
-  name: string
-  parentId?: number
-  createAt: string
-  updateAt: string
-  leader: string
-}
-
-/**
  * 用户信息
  */
 export interface IUserInfo {
   user: IUser
   roles: string[] // 角色
+  permissions: string[] // 权限字符
 }
 
 export interface IUser {
@@ -59,4 +37,6 @@ export interface IUser {
   deptId: number
   gender: string // 性别
   avatar: string // 头像
+  nickName: string // 昵称
+  email: string // 邮箱
 }
