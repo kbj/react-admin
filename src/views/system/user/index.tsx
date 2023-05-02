@@ -11,7 +11,21 @@ import { FormItemType } from '@/components/table-search-form/types'
 import type { ColumnsType } from 'antd/es/table'
 import DictTag from '@/components/dict-tag'
 import { buildTree, parseTimeStamp } from '@/utils'
-import { Button, Col, Form, Input, InputNumber, message, Modal, Radio, Row, Select, Space, TreeSelect } from 'antd'
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Modal,
+  Radio,
+  Row,
+  Select,
+  Space,
+  Tree,
+  TreeSelect
+} from 'antd'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import type { IDeptList } from '@/api/types/system/dept'
 import { listDept } from '@/api/system/dept'
@@ -34,6 +48,12 @@ const queryConfig: TableSearchFormItem[] = [
     itemType: FormItemType.Date,
     label: '创建时间',
     fieldName: 'createTime'
+  },
+  {
+    itemType: FormItemType.Input,
+    label: '所属部门',
+    fieldName: 'deptId',
+    hidden: true
   }
 ]
 
@@ -55,9 +75,14 @@ const User: FC<PropsWithChildren> = () => {
   const [dataTree, setDataTree] = useState<IDeptList[]>([])
   // 角色列表
   const [roleList, setRoleList] = useState<{ label: string; value: Key }[]>([])
+  // 展开树的Key
+  const [expandKeys, setExpandKeys] = useState<Key[]>([])
+  // 选中的树节点
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
 
   useEffect(() => {
     if (!init) {
+      requestDeptTree()
       searchForm.submit()
       setInit(true)
     }
@@ -88,7 +113,6 @@ const User: FC<PropsWithChildren> = () => {
 
   // 新增按钮点击
   const handleClickAdd = () => {
-    requestDeptTree()
     requestRoleList()
 
     form.resetFields()
@@ -97,7 +121,6 @@ const User: FC<PropsWithChildren> = () => {
   }
   // 编辑按钮点击
   const handleClickEdit = (id?: number) => {
-    requestDeptTree()
     requestRoleList()
 
     form.resetFields()
@@ -123,6 +146,10 @@ const User: FC<PropsWithChildren> = () => {
   const requestDeptTree = () => {
     listDept({ enabled: CommonStatus.TRUE }).then((response) => {
       setDataTree(buildTree(response.data))
+
+      // 默认为全部展开状态
+      const defaultKeys = response.data.map((item) => item.id)
+      setExpandKeys(defaultKeys)
     })
   }
 
@@ -134,6 +161,20 @@ const User: FC<PropsWithChildren> = () => {
       setRoleList(response.data.map((item) => ({ label: item.roleName || '', value: item.id as Key })))
     })
   }
+
+  /**
+   * 左侧部门树点击事件
+   */
+  const deptTreeClick = (selectedKeys: Key[]) => {
+    setSelectedKeys(selectedKeys)
+    searchForm.setFieldValue('deptId', selectedKeys && selectedKeys.length > 0 ? selectedKeys[0] : undefined)
+    searchForm.submit()
+  }
+  useEffect(() => {
+    if (!searchForm.getFieldValue('deptId')) {
+      setSelectedKeys([])
+    }
+  }, [searchForm.getFieldValue('deptId')])
 
   // table表格配置
   const tableConfig: ColumnsType<IUser> = [
@@ -195,7 +236,13 @@ const User: FC<PropsWithChildren> = () => {
 
   // 弹窗
   const dialog = (
-    <Form name="form" form={form} autoComplete="off" initialValues={{ enabled: '1' }} labelCol={{ span: 4 }}>
+    <Form
+      name="form"
+      form={form}
+      autoComplete="off"
+      initialValues={{ enabled: '1', deptId: selectedKeys && selectedKeys.length > 0 ? selectedKeys[0] : undefined }}
+      labelCol={{ span: 4 }}
+    >
       <Form.Item label="主键" hidden name="id">
         <InputNumber />
       </Form.Item>
@@ -290,18 +337,37 @@ const User: FC<PropsWithChildren> = () => {
 
   return (
     <>
-      <TableSearchForm form={searchForm} config={queryConfig} loading={loading} query={query} />
+      <Row gutter={20}>
+        <Col span={4}>
+          <div>
+            <Input.Search style={{ marginBottom: 8 }} placeholder="请输入部门名称" />
+            <Tree
+              blockNode
+              style={{ marginTop: '1rem' }}
+              fieldNames={{ title: 'deptName', key: 'id' }}
+              selectedKeys={selectedKeys}
+              expandedKeys={expandKeys}
+              onExpand={(expandKeys) => setExpandKeys(expandKeys)}
+              onSelect={(selectedKeys) => deptTreeClick(selectedKeys)}
+              treeData={dataTree as any[]}
+            />
+          </div>
+        </Col>
+        <Col span={20}>
+          <TableSearchForm form={searchForm} config={queryConfig} loading={loading} query={query} />
 
-      <CommonTable
-        loading={loading}
-        columns={tableConfig}
-        data={data}
-        pageChange={pageChange}
-        selectedRowKeys={selectedRowKeys}
-        setSelectedRowKeys={setSelectedRowKeys}
-      >
-        {topTool}
-      </CommonTable>
+          <CommonTable
+            loading={loading}
+            columns={tableConfig}
+            data={data}
+            pageChange={pageChange}
+            selectedRowKeys={selectedRowKeys}
+            setSelectedRowKeys={setSelectedRowKeys}
+          >
+            {topTool}
+          </CommonTable>
+        </Col>
+      </Row>
 
       {/*新增修改弹窗*/}
       <Modal

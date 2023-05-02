@@ -6,6 +6,7 @@ import { IPageRequest } from '@/api/types/common'
 export interface IUserRequest extends IPageRequest {
   username?: string // 用户名
   mobile?: string // 手机号
+  deptId?: number // 部门ID
   createTime?: number[] // 创建时间
   enabled?: string // 是否启用
 }
