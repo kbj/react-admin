@@ -340,7 +340,6 @@ const User: FC<PropsWithChildren> = () => {
       <Row gutter={20}>
         <Col span={4}>
           <div>
-            <Input.Search style={{ marginBottom: 8 }} placeholder="请输入部门名称" />
             <Tree
               blockNode
               style={{ marginTop: '1rem' }}
