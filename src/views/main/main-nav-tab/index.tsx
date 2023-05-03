@@ -1,6 +1,7 @@
 import type { FC, PropsWithChildren } from 'react'
 import React, { memo, useEffect, useState } from 'react'
-import { Tabs, theme } from 'antd'
+import type { MenuProps, TabsProps } from 'antd'
+import { Dropdown, message, Tabs, theme } from 'antd'
 import { DivWrapper } from '@/views/main/main-nav-tab/style'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useNavTabStore } from '@/store/common'
@@ -8,7 +9,40 @@ import { searchRouteDetail } from '@/router/utils'
 import type { NavTab } from '@/api/types/common'
 import { KeepAliveContainer } from '@/global/keep-alive'
 import { useRouteStore } from '@/store/common/route'
+import { ArrowLeftOutlined, ArrowRightOutlined, CloseCircleOutlined, CloseOutlined } from '@ant-design/icons'
 
+// 标签页右键菜单
+const rightClickMenuItems: MenuProps['items'] = [
+  {
+    label: '关闭当前',
+    key: '1',
+    icon: <CloseOutlined />
+  },
+  {
+    label: '关闭其他',
+    key: '2',
+    icon: <CloseCircleOutlined />
+  },
+  {
+    label: '关闭左侧',
+    key: '3',
+    icon: <ArrowLeftOutlined />
+  },
+  {
+    label: '关闭右侧',
+    key: '4',
+    icon: <ArrowRightOutlined />
+  },
+  {
+    label: '全部关闭',
+    key: '5',
+    icon: <CloseCircleOutlined />
+  }
+]
+
+/**
+ * 导航标签页
+ */
 const MainNavTab: FC<PropsWithChildren> = () => {
   const {
     token: { colorBgContainer, colorPrimary }
@@ -73,9 +107,20 @@ const MainNavTab: FC<PropsWithChildren> = () => {
 
   /**
    * 右键功能
-   * @param event 事件
    */
-  const rightClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {}
+  const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => {
+    return (
+      <Dropdown menu={{ items: rightClickMenuItems, onClick: handleMenuClick }} trigger={['contextMenu']}>
+        <div>
+          <DefaultTabBar {...props} />
+        </div>
+      </Dropdown>
+    )
+  }
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    message.info('Click on menu item.')
+    console.log('click', e)
+  }
 
   return (
     <>
@@ -85,7 +130,7 @@ const MainNavTab: FC<PropsWithChildren> = () => {
           hideAdd
           animated
           activeKey={activeKey}
-          onContextMenu={rightClick}
+          // renderTabBar={renderTabBar}
           items={navTabs.map((tab) => ({
             key: tab.path,
             label: tab.title,
