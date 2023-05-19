@@ -3,8 +3,9 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { lazyLoad, menu2AntdMenu, menu2Routes } from '@/router/utils'
 import produce from 'immer'
-import Home from '@/views/main/home'
+import Home from '@/views/default/home'
 import { DashboardOutlined } from '@ant-design/icons'
+import UserCenter from '@/views/default/user-center'
 
 // 定义要注册的路由
 const globalRouters: AuthRouteObject[] = [
@@ -23,6 +24,20 @@ const globalRouters: AuthRouteObject[] = [
     path: '*',
     meta: { title: '404', anonymous: true },
     element: lazyLoad('/not-found')
+  }
+]
+
+// 定义默认自带路由信息
+const defaultMainRoute: AuthRouteObject[] = [
+  {
+    path: '/main/home',
+    meta: { title: '首页', key: 'home', anonymous: true, isCache: true },
+    element: <Home />
+  },
+  {
+    path: '/main/user-center',
+    meta: { title: '个人中心', key: 'user-center', anonymous: true, isCache: true },
+    element: <UserCenter />
   }
 ]
 
@@ -60,14 +75,7 @@ export const useRouteStore = create<IRouteStore>()(
  * 首页路由合并
  */
 const mergeDefaultMenuRoute = (target?: AuthRouteObject[]) => {
-  const homeRoute = [
-    {
-      path: '/main/home',
-      meta: { title: '首页', key: 'home', anonymous: true, isCache: true },
-      element: <Home />
-    }
-  ]
-  return target ? [...homeRoute, ...target] : [...homeRoute]
+  return target ? [...defaultMainRoute, ...target] : defaultMainRoute
 }
 
 /**

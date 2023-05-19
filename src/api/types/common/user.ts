@@ -40,3 +40,9 @@ export interface IUser {
   nickName: string // 昵称
   email: string // 邮箱
 }
+
+export interface IResetPassword {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}

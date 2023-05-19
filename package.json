@@ -13,6 +13,7 @@
     "@ant-design/icons": "^4.8.0",
     "ahooks": "^3.7.4",
     "antd": "^5.2.1",
+    "antd-img-crop": "^4.12.2",
     "axios": "^1.2.2",
     "dayjs": "^1.11.7",
     "immer": "^9.0.19",

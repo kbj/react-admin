@@ -4,7 +4,7 @@ import type { MenuProps } from 'antd'
 import { Avatar, Dropdown, message, Space } from 'antd'
 import { useUserStore } from '@/store/common'
 import { DivWrapper } from './style'
-import { LogoutOutlined } from '@ant-design/icons'
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 
 interface IProps {
@@ -23,6 +23,14 @@ const UserProfile: FC<IProps> = () => {
 
   const items: MenuProps['items'] = [
     {
+      key: '0',
+      icon: <UserOutlined />,
+      label: <a onClick={() => navigate('/main/user-center')}>个人中心</a>
+    },
+    {
+      type: 'divider'
+    },
+    {
       key: '1',
       icon: <LogoutOutlined />,
       label: <a onClick={logout}>退出登录</a>
@@ -34,10 +42,7 @@ const UserProfile: FC<IProps> = () => {
       <Dropdown menu={{ items }}>
         <Space>
           <Avatar
-            src={
-              userInfo?.user.avatar ||
-              'https://upload.jianshu.io/users/upload_avatars/1102036/c3628b478f06.jpeg'
-            }
+            src={userInfo?.user.avatar || 'https://upload.jianshu.io/users/upload_avatars/1102036/c3628b478f06.jpeg'}
           />
           <span
             style={{
